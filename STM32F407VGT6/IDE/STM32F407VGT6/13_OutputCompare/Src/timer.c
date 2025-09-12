@@ -1,0 +1,108 @@
+#include "stm32f4xx.h"
+
+
+#define TIMER4EN (1U<<2)
+#define CR1_CEN (1U<<0)  //TIMx_CR1 register enable bit CEN
+#define O1OC_TOGGLE ((1U<<4)|(1U<<5))
+#define O2OC_TOGGLE ((1U<<12)|(1U<<13))
+#define O3OC_TOGGLE ((1U<<4)|(1U<<5))
+#define O4OC_TOGGLE ((1U<<12)|(1U<<13))
+#define CCER_CC1E (1U<<0) //Capture compare enable set AFRH12 to 0x0010
+#define CCER_CC2E (1U<<4) //Capture compare enable set AFRH13 to 0x0010
+#define CCER_CC3E (1U<<8) //Capture compare enable set AFRH14 to 0x0010
+#define CCER_CC4E (1U<<12) //Capture compare enable set AFRH15 to 0x0010
+#define AFR12_TIM (1U<<17) //Set alternate function of pin PD12 using Alternate function in data sheet and alternate function register
+#define AFR13_TIM (1U<<21) //Set alternate function of pin PD13 using Alternate function in data sheet and alternate function register
+#define AFR14_TIM (1U<<25) //Set alternate function of pin PD14 using Alternate function in data sheet and alternate function register
+#define AFR15_TIM (1U<<29) //Set alternate function of pin PD15 using Alternate function in data sheet and alternate function register
+#define GPIODEN (1U<<3)
+
+
+void timer4_1hz_init(void)
+{
+	/*
+	Enable clock access to timer 4
+	Set pre-scaler value
+	Set auto reload value
+	Clear the timer counter
+	Enable the timer
+	*/
+
+	//Enable clock access to timer 2
+	RCC->APB1ENR |= TIMER4EN;
+		//Set pre-scaler value
+	TIM4->PSC = 1600-1;  //16 000 000 /1 600 = 10 000     reference manual 18.4.11
+		//Set auto reload value
+	TIM4->ARR = 10000-1; // 10 000 / 1000 = 1		reference manual 18.4.12
+		//Clear the timer counter
+	TIM4->CNT = 0;
+		//Enable the timer
+	TIM4->CR1 = CR1_CEN;
+}
+
+
+void timer4_PD12_PD13_PD14_PD15_output_compare(void)
+{
+	/*
+	Enable clock access to GPIOD
+	Set PD12 PD13 PD14 PD15 mode to alternate function
+	Set PD12 PD13 PD14 PD15 alternate function to TIM4_CH1->4
+	Clear the timer counter
+	Enable the timer
+	*/
+
+	//Enable clock access to GPIOD
+	RCC->AHB1ENR |= GPIODEN;
+
+	//Set PD12 mode to alternate function
+	GPIOD->MODER &=~(1U<<24);
+	GPIOD->MODER |=(1U<<25);
+	//Set PD13 mode to alternate function
+	GPIOD->MODER &=~(1U<<26);
+	GPIOD->MODER |=(1U<<27);
+	//Set PD14 mode to alternate function
+	GPIOD->MODER &=~(1U<<28);
+	GPIOD->MODER |=(1U<<29);
+	//Set PD15 mode to alternate function
+	GPIOD->MODER &=~(1U<<30);
+	GPIOD->MODER |=(1U<<31);
+
+	//SET PD12 alternate function to AF2
+	GPIOD->AFR[1] |= AFR12_TIM;
+	//SET PD13 alternate function to AF2
+	GPIOD->AFR[1] |= AFR13_TIM;
+	//SET PD14 alternate function to AF2
+	GPIOD->AFR[1] |= AFR14_TIM;
+	//SET PD15 alternate function to AF2
+	GPIOD->AFR[1] |= AFR15_TIM;
+
+	//Enable clock access to timer 4
+	RCC->APB1ENR |= TIMER4EN;
+		//Set pre-scaler value
+	TIM4->PSC = 1600-1;  //16 000 000 /1 600 = 10 000     reference manual 18.4.11
+		//Set auto reload value
+	TIM4->ARR = 10000-1; // 10 000 / 1000 = 1		reference manual 18.4.12
+
+	/*Set output compare toggle mode for channel 1*/
+	TIM4->CCMR1 |= O1OC_TOGGLE;
+	/*Set output compare toggle mode for channel 2*/
+	TIM4->CCMR1 |= O2OC_TOGGLE;
+	/*Set output compare toggle mode for channel 3*/
+	TIM4->CCMR2 |= O3OC_TOGGLE;
+	/*Set output compare toggle mode for channel 4*/
+	TIM4->CCMR2 |= O4OC_TOGGLE;
+
+	/*Enable timer4 ch1 in capture compare mode  CCER*/
+	TIM4->CCER |= CCER_CC1E;
+	/*Enable timer4 ch2 in capture compare mode  CCER*/
+	TIM4->CCER |= CCER_CC2E;
+	/*Enable timer4 ch3 in capture compare mode  CCER*/
+	TIM4->CCER |= CCER_CC3E;
+	/*Enable timer4 ch4 in capture compare mode  CCER*/
+	TIM4->CCER |= CCER_CC4E;
+
+	//Clear the timer counter
+	TIM4->CNT = 0;
+		//Enable the timer
+	TIM4->CR1 = CR1_CEN;
+}

@@ -1,0 +1,56 @@
+
+//Get interrupt from push button connected to PA0
+
+#include "extint.h"
+
+#define GPIOAEN (1U<<0)
+#define SYSCFGEN (1U<<14)
+
+void PA0_extint_init(void)
+{
+    /*
+    Disable global interrupts
+    Enable clock access to GPIOA
+    Enable clock access to SYSCFG
+    Select PORTA for EXTI13
+    Unmask EXTI13
+    Select falling edge trigger (rising or falling edge trigger)
+    Enable EXTI13 line in NVIC
+    Enable global interrupts
+    */
+
+    //Disable global interrupts
+    __disable_irq();
+
+    //Enable clock access to GPIOA
+    RCC->AHB1ENR |= GPIOAEN;
+
+    /*Set PC13 as input pin explicitly*/
+    GPIOA->MODER &=~(1U<<0);
+    GPIOA->MODER &=~(1U<<1);
+
+    //Enable clock access to SYSCFG
+    RCC->APB2ENR |= SYSCFGEN;
+
+    //All GPIO ports are connected to the NVIC through the EXTI external interrupt lines
+    //Select PORTA for EXTI0 (SYSCFG_EXTICR1 register) to 0 to set port A as in reference manual 9.2.3
+    //(All port pin 0's are connected to EXTI0 pin1's connected to EXTI1 etc
+    //NOTE So you can't have two ports with the same pin set as an interrupt (reference manual 12.2.5
+    //These are default all 0's but just for explanation and future ref
+    SYSCFG->EXTICR[0] &=~(1U<<0);
+    SYSCFG->EXTICR[0] &=~(1U<<1);
+    SYSCFG->EXTICR[0] &=~(1U<<2);
+    SYSCFG->EXTICR[0] &=~(1U<<3);
+
+    //Unmask EXTI0 (EXTI_IMR interrupt mask register)(setting bit 0 to 1 uncovers MR0
+    EXTI->IMR |=(1U<<0);
+
+    //Select falling edge trigger (Falling edge trigger select register EXTI_FTSR)
+    EXTI->FTSR |=(1U<<0);//(TR0)
+
+    //Enable EXTI0 line in NVIC (in cortexM4.h file included already right click NVIC_EnableIRQ and look at declaration)
+    NVIC_EnableIRQ(EXTI0_IRQn);// right click EXTI0_IRQn and look at declaration to see it in the STM32F4xx.h file
+
+    //Enable global interrupts
+     __enable_irq();
+}

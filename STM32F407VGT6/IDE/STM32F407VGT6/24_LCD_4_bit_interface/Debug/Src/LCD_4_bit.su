@@ -1,0 +1,6 @@
+../Src/LCD_4_bit.c:25:6:GPIO_init	4	static
+../Src/LCD_4_bit.c:34:6:LCD_init	8	static
+../Src/LCD_4_bit.c:53:6:LCD_command	16	static
+../Src/LCD_4_bit.c:67:6:LCD_data	16	static
+../Src/LCD_4_bit.c:75:6:LCD_nibble_write	16	static
+../Src/LCD_4_bit.c:95:6:delayMs	24	static

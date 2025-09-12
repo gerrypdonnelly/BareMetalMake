@@ -1,0 +1,37 @@
+//STM32F407VGT6 ports A&D connected to AHB1//Where are LED's connected
+
+//FTDI Orange is Tx connected to PA3 Rx of micro
+//FTDI Yellow is Rx connected to PA2 Tx of micro
+
+//Looking at alternate function map in data sheet USART2 TX is PA2 Pin 25 and RX is PA3 Pin  26
+
+#include <stdio.h>   /************************needed for printf*************************/
+#include <stdint.h>
+#include "stm32f4xx.h"
+#include "uart.h"
+#include "adc.h"
+#include "systick.h"
+#include "timer.h"
+
+
+
+int timestamp = 0;
+
+// Set up : connect a jumper wire from LED output D12, D13, D14 or D15 output to PA6
+int main(void)
+{
+
+	timer4_PD12_PD13_PD14_PD15_output_compare();
+	timer3_PA6_input_capture();//Check bit 1 in timer status register TIMx_SR  CC1f interrupt flag
+
+	while(1)
+	{
+		//wait until edge is captured
+		while(!(TIM3->SR & SR_CC1IF)){}
+
+		//Read captured value
+		timestamp = TIM3->CCR1;
+
+	}
+}
+

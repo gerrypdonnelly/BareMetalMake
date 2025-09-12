@@ -1,0 +1,5 @@
+../Src/LCD_8_bit.c:27:6:GPIO_init	4	static
+../Src/LCD_8_bit.c:36:6:LCD_init	8	static
+../Src/LCD_8_bit.c:52:6:LCD_command	16	static
+../Src/LCD_8_bit.c:61:6:LCD_data	16	static
+../Src/LCD_8_bit.c:71:6:delayMs	24	static

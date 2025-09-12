@@ -1,0 +1,2 @@
+../Src/timer.c:21:6:timer4_1hz_init	4	static
+../Src/timer.c:44:6:timer4_PD12_PD13_PD14_PD15_output_compare	4	static

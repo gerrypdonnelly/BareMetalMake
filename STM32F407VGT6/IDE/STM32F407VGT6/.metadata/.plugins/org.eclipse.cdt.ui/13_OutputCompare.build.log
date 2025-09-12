@@ -1,0 +1,10 @@
+10:28:55 **** Incremental Build of configuration Debug for project 13_OutputCompare ****
+make -j20 all 
+arm-none-eabi-size  13_OutputCompare.elf 
+   text	   data	    bss	    dec	    hex	filename
+    976	      0	   1568	   2544	    9f0	13_OutputCompare.elf
+Finished building: default.size.stdout
+ 
+
+10:28:55 Build Finished. 0 errors, 0 warnings. (took 219ms)
+

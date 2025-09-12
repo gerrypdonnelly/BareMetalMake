@@ -1,0 +1,10 @@
+14:14:18 **** Incremental Build of configuration Debug for project 1_STM32F407VGT6_Bare_Metal_addr_struct ****
+make -j20 all 
+arm-none-eabi-size  1_STM32F407VGT6_Bare_Metal_addr_struct.elf 
+   text	   data	    bss	    dec	    hex	filename
+    840	      0	   1568	   2408	    968	1_STM32F407VGT6_Bare_Metal_addr_struct.elf
+Finished building: default.size.stdout
+ 
+
+14:14:18 Build Finished. 0 errors, 0 warnings. (took 166ms)
+

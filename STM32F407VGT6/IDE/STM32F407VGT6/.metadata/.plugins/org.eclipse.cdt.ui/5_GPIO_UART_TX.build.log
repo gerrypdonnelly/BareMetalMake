@@ -1,0 +1,10 @@
+14:29:39 **** Incremental Build of configuration Debug for project 5_GPIO_UART_TX ****
+make -j20 all 
+arm-none-eabi-size  5_GPIO_UART_TX.elf 
+   text	   data	    bss	    dec	    hex	filename
+    936	      0	   1568	   2504	    9c8	5_GPIO_UART_TX.elf
+Finished building: default.size.stdout
+ 
+
+14:29:39 Build Finished. 0 errors, 0 warnings. (took 166ms)
+

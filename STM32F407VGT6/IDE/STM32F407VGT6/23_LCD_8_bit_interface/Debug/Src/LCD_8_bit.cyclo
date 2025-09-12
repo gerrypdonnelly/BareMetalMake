@@ -1,0 +1,5 @@
+../Src/LCD_8_bit.c:27:6:GPIO_init	1
+../Src/LCD_8_bit.c:36:6:LCD_init	1
+../Src/LCD_8_bit.c:52:6:LCD_command	1
+../Src/LCD_8_bit.c:61:6:LCD_data	1
+../Src/LCD_8_bit.c:71:6:delayMs	3

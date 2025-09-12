@@ -1,0 +1,51 @@
+//STM32F407VGT6 ports A&D connected to AHB1//Where are LED's connected
+//Program uses ADC driver to perform continuous conversion
+//FTDI Orange is Tx connected to PA3 Rx of micro
+//FTDI Yellow is Rx connected to PA2 Tx of micro
+
+//Looking at alternate function map in data sheet USART2 TX is PA2 Pin 25 and RX is PA3 Pin  26
+
+#include <stdio.h>   /************************needed for printf*************************/
+#include <stdint.h>
+#include "stm32f4xx.h"
+#include "uart.h"
+#include "adc.h"
+
+static void adc_callback(void);
+
+uint32_t sensor_value;
+
+int main(void)
+{
+	uart2_tx_init();
+	pa1_adc_interrupt_init();
+	start_conversion();
+
+
+	while(1)
+	{
+
+	}
+}
+
+static adc_callback(void)
+		{
+			sensor_value = ADC1->DR;
+			printf("Sensor value : %d \n\r", (int)sensor_value);
+		}
+
+
+//From vector table the name for ADC interrupt handler is ADC_IRQHandler
+void ADC_IRQHandler(void)
+{
+	//check if EOC end of conversion flag is raised in status register
+	if((ADC1->sr & SR_EOC) != 0) //if ADC is not equal to 0 i.e. set
+	{
+		//Clear status flag EOC
+		ADC1->SR &=~SR_EOC;
+		//Do something (call back function)
+		adc_callback();
+	}
+
+}
+

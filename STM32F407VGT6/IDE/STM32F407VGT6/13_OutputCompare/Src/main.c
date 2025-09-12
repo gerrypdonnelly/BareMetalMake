@@ -1,0 +1,32 @@
+//STM32F407VGT6 ports A&D connected to AHB1//Where are LED's connected
+//Program uses timer2 in output compare mode (toggling pin directly when timer times out allows timer to directly toggle pin without main prog loop)
+//FTDI Orange is Tx connected to PA3 Rx of micro
+//FTDI Yellow is Rx connected to PA2 Tx of micro
+
+//Looking at alternate function map in data sheet USART2 TX is PA2 Pin 25 and RX is PA3 Pin  26
+
+#include <stdio.h>   /************************needed for printf*************************/
+#include <stdint.h>
+#include "stm32f4xx.h"
+#include "uart.h"
+#include "adc.h"
+#include "systick.h"
+#include "timer.h"
+
+
+
+
+
+int main(void)
+{
+
+	timer4_PD12_PD13_PD14_PD15_output_compare();
+
+
+	while(1)
+	{
+
+
+	}
+}
+

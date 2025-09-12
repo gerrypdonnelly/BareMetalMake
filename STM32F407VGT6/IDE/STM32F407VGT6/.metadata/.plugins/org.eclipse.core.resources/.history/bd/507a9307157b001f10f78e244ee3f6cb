@@ -1,0 +1,46 @@
+//STM32F407VGT6 ports A&D connected to AHB1//Where are LED's connected
+//LED3 (ORANGE LD3)
+//Port:D
+//Pin:13
+
+//LED4 (RED LD5)
+//Port:D
+//Pin:12
+
+//LED5 (GREEN LD4)
+//Port:D
+//Pin:14
+
+//LED6 (BLUE LD6)
+//Port:D
+//Pin:15
+
+//Where is the PB connected
+//User PB
+//Port:A
+//Pin:0
+
+
+// TIMER2_CH1 is connected to physical pin PA15 as per alternate function mapping table 9 Data sheet
+#include <stdio.h>
+#include<stdint.h>
+#include "stm32f4xx.h"
+//#include "uart.h"
+//#include "adc.h"
+#include "systick.h"
+#include "timer.h"
+
+
+
+int main(void)
+{
+	timer2_PA5_output_compare();
+
+
+	while(1)
+	{
+
+
+
+	}
+}

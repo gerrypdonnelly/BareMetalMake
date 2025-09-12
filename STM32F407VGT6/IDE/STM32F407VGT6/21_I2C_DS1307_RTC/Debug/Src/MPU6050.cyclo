@@ -1,0 +1,4 @@
+../Src/MPU6050.c:8:6:MPU6050_read_address	1
+../Src/MPU6050.c:15:6:MPU6050_write	1
+../Src/MPU6050.c:23:6:MPU6050_read_values	1
+../Src/MPU6050.c:29:6:MPU6050_init	1

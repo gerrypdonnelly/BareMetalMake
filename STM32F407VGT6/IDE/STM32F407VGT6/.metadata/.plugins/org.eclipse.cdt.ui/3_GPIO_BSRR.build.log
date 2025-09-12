@@ -1,0 +1,12 @@
+09:07:19 **** Incremental Build of configuration Debug for project 3_GPIO_BSRR ****
+make -j20 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F4 -DSTM32F407VGTx -DSTM32F407xx -c -I../Inc -I"D:/MicroControllers/STM32F407VGT6/STM32F407VGT6/chip_headers/CMSIS/Include" -I"D:/MicroControllers/STM32F407VGT6/STM32F407VGT6/chip_headers/CMSIS/Device/ST/STM32F4xx/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+../Src/main.c:28:10: fatal error: uart.h: No such file or directory
+   28 | #include "uart.h"
+      |          ^~~~~~~~
+compilation terminated.
+make: *** [Src/subdir.mk:25: Src/main.o] Error 1
+"make -j20 all" terminated with exit code 2. Build might be incomplete.
+
+09:07:19 Build Failed. 2 errors, 0 warnings. (took 217ms)
+
