@@ -1,0 +1,9 @@
+11:45:56 **** Clean-only build of configuration Debug for project 9_General_purpose_timer ****
+make -j20 clean 
+rm -rf ./Startup/startup_stm32f103c8tx.d ./Startup/startup_stm32f103c8tx.o
+rm -rf ./Src/ADC.cyclo ./Src/ADC.d ./Src/ADC.o ./Src/ADC.su ./Src/SYSTICK.cyclo ./Src/SYSTICK.d ./Src/SYSTICK.o ./Src/SYSTICK.su ./Src/Timer.cyclo ./Src/Timer.d ./Src/Timer.o ./Src/Timer.su ./Src/USART.cyclo ./Src/USART.d ./Src/USART.o ./Src/USART.su ./Src/main.cyclo ./Src/main.d ./Src/main.o ./Src/main.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
+rm -rf 9_General_purpose_timer.elf 9_General_purpose_timer.list 9_General_purpose_timer.map default.size.stdout
+ 
+
+11:45:56 Build Finished. 0 errors, 0 warnings. (took 626ms)
+

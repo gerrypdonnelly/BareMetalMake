@@ -1,0 +1,6 @@
+1731000859988	Rename resource '3_UART_Tx'
+1731061697858	Delete resource '3_UART_Tx_individual_transmits/3_UART_Tx (1).launch'
+1731072287269	Rename resource '4_UART_Rx_Tx'
+1731165040724	Delete resource '5_UART_Rx_individual_receipts'
+1731166367478	Rename resource '5_UART_Tx_Calculated_baud'
+1731166392375	Rename resource '4_UART_Tx_Alphabet_switch_case'

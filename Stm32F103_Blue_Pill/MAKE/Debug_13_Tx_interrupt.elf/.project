@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Debug_13_Tx_interrupt.elf</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>13_Tx_interrupt.elf</name>
+			<type>1</type>
+			<location>D:/MicroControllers/STM32F103C8T6_Blue_pill/13_Tx_interrupt/Debug/13_Tx_interrupt.elf</location>
+		</link>
+		<link>
+			<name>1_Button_Press.elf</name>
+			<type>1</type>
+			<location>D:/MicroControllers/STM32F103C8T6_Blue_pill/13_Tx_interrupt/Debug/1_Button_Press.elf</location>
+		</link>
+		<link>
+			<name>2_Button_BSRR.elf</name>
+			<type>1</type>
+			<location>D:/MicroControllers/STM32F103C8T6_Blue_pill/13_Tx_interrupt/Debug/2_Button_BSRR.elf</location>
+		</link>
+		<link>
+			<name>3_UART_Tx.elf</name>
+			<type>1</type>
+			<location>D:/MicroControllers/STM32F103C8T6_Blue_pill/13_Tx_interrupt/Debug/3_UART_Tx.elf</location>
+		</link>
+		<link>
+			<name>5A_UART_RxTx.elf</name>
+			<type>1</type>
+			<location>D:/MicroControllers/STM32F103C8T6_Blue_pill/13_Tx_interrupt/Debug/5A_UART_RxTx.elf</location>
+		</link>
+		<link>
+			<name>5_UART_Rx_Into_buffer.elf</name>
+			<type>1</type>
+			<location>D:/MicroControllers/STM32F103C8T6_Blue_pill/13_Tx_interrupt/Debug/5_UART_Rx_Into_buffer.elf</location>
+		</link>
+	</linkedResources>
+</projectDescription>

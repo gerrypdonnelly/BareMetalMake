@@ -1,0 +1,17 @@
+15:31:38 **** Incremental Build of configuration Debug for project 4_UART_Tx_Alphabet_switch_case ****
+make -j20 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C8Tx -c -I../Inc -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include" -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "4_UART_Tx_Alphabet_switch_case.elf" @"objects.list"   -mcpu=cortex-m3 -T"F:\MicroControllers\STM32F103C8T6_Blue_pill\4_UART_Tx_Alphabet_switch_case\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="4_UART_Tx_Alphabet_switch_case.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: 4_UART_Tx_Alphabet_switch_case.elf
+ 
+arm-none-eabi-size  4_UART_Tx_Alphabet_switch_case.elf 
+arm-none-eabi-objdump -h -S 4_UART_Tx_Alphabet_switch_case.elf  > "4_UART_Tx_Alphabet_switch_case.list"
+   text	   data	    bss	    dec	    hex	filename
+   1304	      4	   1660	   2968	    b98	4_UART_Tx_Alphabet_switch_case.elf
+Finished building: default.size.stdout
+ 
+Finished building: 4_UART_Tx_Alphabet_switch_case.list
+ 
+
+15:31:40 Build Finished. 0 errors, 0 warnings. (took 1s.710ms)
+

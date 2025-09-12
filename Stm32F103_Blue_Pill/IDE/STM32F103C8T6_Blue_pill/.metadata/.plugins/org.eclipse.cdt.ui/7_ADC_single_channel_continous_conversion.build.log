@@ -1,0 +1,9 @@
+11:45:55 **** Clean-only build of configuration Debug for project 7_ADC_single_channel_continous_conversion ****
+make -j20 clean 
+rm -rf ./Startup/startup_stm32f103c8tx.d ./Startup/startup_stm32f103c8tx.o
+rm -rf ./Src/ADC.cyclo ./Src/ADC.d ./Src/ADC.o ./Src/ADC.su ./Src/USART.cyclo ./Src/USART.d ./Src/USART.o ./Src/USART.su ./Src/main.cyclo ./Src/main.d ./Src/main.o ./Src/main.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
+rm -rf 7_ADC_single_channel_continous_conversion.elf 7_ADC_single_channel_continous_conversion.list 7_ADC_single_channel_continous_conversion.map default.size.stdout
+ 
+
+11:45:55 Build Finished. 0 errors, 0 warnings. (took 226ms)
+

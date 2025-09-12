@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1281387994/append=true
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1281387994/appendContributed=true
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1281387994/chip_headers/delimiter=\:
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1281387994/chip_headers/operation=append
+environment/project/com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1281387994/chip_headers/value=/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include

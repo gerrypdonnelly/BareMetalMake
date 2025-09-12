@@ -1,0 +1,53 @@
+#define DMA_CR_TCIE (1U<<4)
+#define DMA1EN (1U<<21)
+#define DMA_ST_EN (1U<<0)
+#define CHSEL4 (1U<<27)
+#define DMA_MEM_INC (1U<<10)
+#define DMA_DIR_MEMtoPERIPH (1U<<6)
+#define DMA_CR_EN 1U<<0
+#defing USART_CR3_DMAT (1<<7)
+
+void DMA1_Stream6_init (uint32_t source, uint32_t destination, uint32_t length)
+{
+
+/*
+Enable clock DMA
+Disable DMA1 Stream6
+Clear interrupt flags Stream 6
+Set destination buffer
+Set source buffer
+Set length
+Select stream 6 channel 4
+Enable memory increment
+Configure transfer direction memory to peripheral
+Enable transfer complete interrupt
+Disable FIFO mode / enable direct mode
+Enable DMA1 Stream 6
+Enable USART 2 transfer DMA
+NVIC Enable DMA IRQ 
+*/
+
+ 
+RCC->AHB1ENR |=DMA1EN;
+DMA1_Stream6->CR &=~DMA_ST_EN;
+DMA1->HIFCR |=(1U<<16);
+DMA1->HIFCR |=(1U<<18);
+DMA1->HIFCR |=(1U<<19);
+DMA1->HIFCR |=(1U<<20);
+DMA1->HIFCR |=(1U<<21);
+DMA1_Stream6->PAR = destination;
+DMA1_Stream6->MDAR = source;
+DMA1_Stream6->NDTR = length;
+DMA1_Stream6->CR = CHSEL4;
+DMA1_Stream6->CR |= DMA_MEM_INC;
+DMA1_Stream6->CR |= DMA_DIR_MEMtoPERIPH;
+DMA1_Stream6->CR |= DMA_CR_TCIE;
+DMA1_Stream6->FCR = 0;
+DMA1_Stream6->CR |= DMA_CR_EN;
+USART2_CR3 = USART_CR3_DMAT;
+NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+
+}
+
+main.c
+

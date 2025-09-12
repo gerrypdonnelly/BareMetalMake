@@ -1,0 +1,84 @@
+/**
+ ******************************************************************************
+Key PA0
+LED PB2 APB2
+Setting USART PA9 Tx
+Setting USART PA10 Rx
+ ******************************************************************************
+ */
+
+#include "stm32f103xb.h"
+
+
+
+int main(void)
+{
+
+	//Enable clock to port
+	//Set Tx pin as o/p and Rx pin as i/p
+	//Set port to alternate function USART
+	//Enable clock access to USART module
+	//
+	//USART
+	//Configure baudrate
+	//Configure transfer direction
+	//Enable the USART module
+	//
+	//USART transmit
+	//Make sure the transmit buffer is empty
+
+
+	while(1)
+		{
+
+		}
+}
+
+
+void UART_Init(void) {
+    // Enable the clocks for GPIOA and USART1
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1, ENABLE);
+
+    // Configure PA9 (USART1 TX) as push-pull alternate function
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    // Configure PA10 (USART1 RX) as input floating
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    // Initialize USART1 settings
+    USART_InitTypeDef USART_InitStruct;
+    USART_InitStruct.USART_BaudRate = 9600;  // Set baud rate
+    USART_InitStruct.USART_WordLength = USART_WordLength_8b;  // 8-bit data
+    USART_InitStruct.USART_StopBits = USART_StopBits_1;  // 1 stop bit
+    USART_InitStruct.USART_Parity = USART_Parity_No;  // No parity
+    USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStruct.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
+    USART_Init(USART1, &USART_InitStruct);
+
+    // Enable USART1
+    USART_Cmd(USART1, ENABLE);
+}
+
+void UART_SendChar(char c) {
+    // Wait until the transmit data register is empty
+    while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+    // Send the character
+    USART_SendData(USART1, c);
+    // Wait until transmission is complete
+    while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
+}
+
+int main(void) {
+    UART_Init();  // Initialize UART
+
+    while (1) {
+        UART_SendChar('H');  // Transmit character 'H'
+        for (volatile int i = 0; i < 1000000; i++);  // Delay
+    }
+}

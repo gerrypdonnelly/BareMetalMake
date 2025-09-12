@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "stdio.h": "c",
+        "stm32f103xb.h": "c",
+        "delay.h": "c"
+    }
+}

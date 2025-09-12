@@ -1,0 +1,10 @@
+09:00:05 **** Incremental Build of configuration Debug for project 10_output_compare_flashing_LED__on_timer ****
+make -j20 all 
+arm-none-eabi-size  10_output_compare_flashing_LED__on_timer.elf 
+   text	   data	    bss	    dec	    hex	filename
+    928	      0	   1568	   2496	    9c0	10_output_compare_flashing_LED__on_timer.elf
+Finished building: default.size.stdout
+ 
+
+09:00:05 Build Finished. 0 errors, 0 warnings. (took 227ms)
+

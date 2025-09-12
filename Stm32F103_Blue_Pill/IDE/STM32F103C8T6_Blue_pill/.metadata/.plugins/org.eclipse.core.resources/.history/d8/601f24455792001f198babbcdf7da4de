@@ -1,0 +1,49 @@
+/**
+ ******************************************************************************
+Key PA0
+LED PB2 APB2
+Setting USART PA9 Tx
+Setting USART PA10 Rx
+ ******************************************************************************
+ */
+
+#include "stm32f103xb.h"
+
+
+
+int main(void)
+{
+
+	//Enable clock to port
+	//Set Tx pin as o/p and Rx pin as i/p
+	//Set port to alternate function USART
+	//Enable clock access to USART module
+	//
+	//USART
+	//Configure baudrate
+	//Configure transfer direction
+	//Enable the USART module
+	//
+	//USART transmit
+	//Make sure the transmit buffer is empty
+
+	//Enable clock to portA
+	RCC->APB2ENR  |=(1U<<2);
+	//Set Tx pin PA9 as o/p push pull
+	GPIOA->CRL &=~(1U<<7);
+	GPIOA->CRL &=~(1U<<6);
+	GPIOA->CRL |=(1U<<5);
+	GPIOA->CRL |=(1U<<4);
+
+	//Set Rx pin PA10 as i/p
+	GPIOA->CRL &=~(1U<<11);
+	GPIOA->CRL |=(1U<<10);
+	GPIOA->CRL &=~(1U<<9);
+	GPIOA=>CRL &=~(1U<<8);
+	while(1)
+{
+
+}
+}
+
+

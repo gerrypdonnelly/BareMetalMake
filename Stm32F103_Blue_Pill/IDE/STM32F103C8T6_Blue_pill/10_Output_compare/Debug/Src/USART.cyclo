@@ -1,0 +1,2 @@
+../Src/USART.c:13:6:USART1_Init	1
+../Src/USART.c:40:6:UART_write	2

@@ -1,0 +1,24 @@
+11:25:06 **** Build of configuration Debug for project 6_ADC ****
+make -j20 all 
+arm-none-eabi-gcc -mcpu=cortex-m3 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"Startup/startup_stm32f103c8tx.d" -MT"Startup/startup_stm32f103c8tx.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Startup/startup_stm32f103c8tx.o" "../Startup/startup_stm32f103c8tx.s"
+arm-none-eabi-gcc "../Src/USART.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C8Tx -c -I../Inc -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include" -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/USART.d" -MT"Src/USART.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/USART.o"
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C8Tx -c -I../Inc -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include" -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/main.o"
+arm-none-eabi-gcc "../Src/syscalls.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C8Tx -c -I../Inc -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include" -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/syscalls.d" -MT"Src/syscalls.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/syscalls.o"
+arm-none-eabi-gcc "../Src/sysmem.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C8Tx -c -I../Inc -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include" -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/sysmem.d" -MT"Src/sysmem.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/sysmem.o"
+../Src/main.c: In function 'main':
+../Src/main.c:47:12: error: 'data_index' undeclared (first use in this function)
+   47 |         if(data_index == BUFFER_SIZE)
+      |            ^~~~~~~~~~
+../Src/main.c:47:12: note: each undeclared identifier is reported only once for each function it appears in
+../Src/main.c:47:26: error: 'BUFFER_SIZE' undeclared (first use in this function)
+   47 |         if(data_index == BUFFER_SIZE)
+      |                          ^~~~~~~~~~~
+../Src/main.c:55:39: error: 'Data_rec' undeclared (first use in this function)
+   55 |                         uart_transmit(Data_rec[i]);                     // Transmit Array element
+      |                                       ^~~~~~~~
+make: *** [Src/subdir.mk:28: Src/main.o] Error 1
+make: *** Waiting for unfinished jobs....
+"make -j20 all" terminated with exit code 2. Build might be incomplete.
+
+11:25:08 Build Failed. 5 errors, 0 warnings. (took 1s.677ms)
+

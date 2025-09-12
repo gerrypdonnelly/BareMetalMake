@@ -1,0 +1,22 @@
+09:19:16 **** Incremental Build of configuration Debug for project 6_UART_Rx_Into_buffer_Printf ****
+make -j20 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32 -DSTM32F1 -DSTM32F103C8Tx -c -I../Inc -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include -I/home/ger/Documents/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Device/ST/STM32F1xx/Include" -I"F:/MicroControllers/STM32F103C8T6_Blue_pill/Chip_headers/CMSIS/Include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/main.o"
+../Src/main.c: In function '__io_putchar':
+../Src/main.c:31:9: warning: implicit declaration of function '_write'; did you mean 'fwrite'? [-Wimplicit-function-declaration]
+   31 |         _write(ch);
+      |         ^~~~~~
+      |         fwrite
+arm-none-eabi-gcc -o "6_UART_Rx_Into_buffer_Printf.elf" @"objects.list"   -mcpu=cortex-m3 -T"F:\MicroControllers\STM32F103C8T6_Blue_pill\6_UART_Rx_Into_buffer_Printf\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="6_UART_Rx_Into_buffer_Printf.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: 6_UART_Rx_Into_buffer_Printf.elf
+ 
+arm-none-eabi-size  6_UART_Rx_Into_buffer_Printf.elf 
+arm-none-eabi-objdump -h -S 6_UART_Rx_Into_buffer_Printf.elf  > "6_UART_Rx_Into_buffer_Printf.list"
+   text	   data	    bss	    dec	    hex	filename
+   5032	     92	   1924	   7048	   1b88	6_UART_Rx_Into_buffer_Printf.elf
+Finished building: default.size.stdout
+ 
+Finished building: 6_UART_Rx_Into_buffer_Printf.list
+ 
+
+09:19:18 Build Finished. 0 errors, 1 warnings. (took 2s.239ms)
+
