@@ -22,14 +22,14 @@ void USART1_Tx_Init(void)
     GPIOA->CRH |= (1U << 7); // Alternate function push-pull
 
     /*
-    *  8MHz clock with required baudrate of 9600
-    *  9600=8Mhz/(16*USARTDIV)
-    *  USARTDIV = 8Mhz/(16*9600) => 52.083
-    *  .083 fractional part & 52 is mantissa part
-    *  Div fraction = .086  then * by 16 for over sampling => 1.328
-    *  converting mantissa to hex 52 => 0x34
-    *  USARTDIV value = 0x341
-    */
+     *  8MHz clock with required baudrate of 9600
+     *  9600=8Mhz/(16*USARTDIV)
+     *  USARTDIV = 8Mhz/(16*9600) => 52.083
+     *  .083 fractional part & 52 is mantissa part
+     *  Div fraction = .086  then * by 16 for over sampling => 1.328
+     *  converting mantissa to hex 52 => 0x34
+     *  USARTDIV value = 0x341
+     */
     // Configure USART1 for 9600 baud rate
     USART1->BRR = 0x341; // Assuming a clock of 8 MHz
 
@@ -40,12 +40,12 @@ void USART1_Tx_Init(void)
 
 void usart1_write(int ch)
 {
-//make sure tx register is empty
-while (!(USART1->SR & USART_SR_TXE)); //wait until tx register is empty
-//write to transmit data register
-USART1->DR = ch & 0xff; //and with 0xff to give 8 bit
+    // make sure tx register is empty
+    while (!(USART1->SR & USART_SR_TXE))
+        ; // wait until tx register is empty
+    // write to transmit data register
+    USART1->DR = ch & 0xff; // and with 0xff to give 8 bit
 }
-
 
 int main(void)
 {
@@ -53,6 +53,13 @@ int main(void)
 
     while (1)
     {
-        usart1_write('Y');
+        usart1_write('G');
+        usart1_write('e');
+        usart1_write('r');
+        usart1_write('r');
+        usart1_write('y');
+        usart1_write('\n');
+        for (volatile int i = 0; i < 1000000; i++)
+            ; // Simple delay
     }
 }
