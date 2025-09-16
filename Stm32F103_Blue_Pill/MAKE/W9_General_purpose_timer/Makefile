@@ -44,4 +44,4 @@ flash :
 	openocd -f interface/stlink.cfg -f target/stm32f1x.cfg -c "program $(BIN_DIR)/general_purpose_timer.elf verify reset exit"
 
 clean :
-	rm -f $(BIN_DIR)/* $(BUILD_DIR)/*
+	rm -rf $(BIN_DIR)/* $(BUILD_DIR)/*
