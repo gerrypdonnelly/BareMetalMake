@@ -13,9 +13,18 @@ stm32f103_startup.o : startup_linker/stm32f103_startup.c
 	
 blink_LED.elf : $(OFILES)
 	$(CC) $(LFLAGS)  build/stm32f103_startup.o build/kernel.o -o bin/blink_LED.elf 
-	
+
+
+hex : blink_LED.hex
+
+blink_LED.hex : bin/blink_LED.elf
+	 arm-none-eabi-objcopy -O ihex bin/blink_LED.elf bin/blink_LED.hex
+
+
 flash : 
 	openocd -f interface/stlink.cfg -f target/stm32f1x.cfg -c "program bin/blink_LED.elf verify reset exit"
 	
+
+
 clean :
 	rm bin/*.elf bin/*.map build/*.o
