@@ -5,11 +5,11 @@ OFILES = main.o stm32f103_startup.o
 
 all : button_press.elf
 
-main.o : src/main.c
+main.o : Src/main.c
 	$(CC) $(CFLAGS) $^ -o build/$@
 	
-stm32f103_startup.o : startup_linker/stm32f103_startup.c
-	$(CC) $(CFLAGS) $^ -o build\$@
+stm32f103_startup.o : startup_linker/stm32F103_startup.c
+	$(CC) $(CFLAGS) $^ -o build/$@
 	
 button_press.elf : $(OFILES)
 	$(CC) $(LFLAGS)  build/stm32f103_startup.o build/main.o -o bin/button_press.elf 

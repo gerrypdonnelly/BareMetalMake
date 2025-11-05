@@ -5,14 +5,14 @@ OFILES = main.o stm32f103_startup.o
 
 all : stm32_UART_Tx_individual_transmits.elf
 
-main.o : src/main.c
+main.o : Src/main.c
 	$(CC) $(CFLAGS) $^ -o build/$@
 	
-stm32f103_startup.o : startup_linker/stm32f103_startup.c
+stm32f103_startup.o : startup_linker/stm32F103_startup.c
 	$(CC) $(CFLAGS) $^ -o build/$@
 	
 stm32_UART_Tx_individual_transmits.elf : $(OFILES)
-	$(CC) $(LFLAGS)  build/stm32f103_startup.o build\main.o -o bin/stm32_UART_Tx_individual_transmits.elf 
+	$(CC) $(LFLAGS)  build/stm32f103_startup.o build/main.o -o bin/stm32_UART_Tx_individual_transmits.elf 
 	
 # ... other targets ...
 

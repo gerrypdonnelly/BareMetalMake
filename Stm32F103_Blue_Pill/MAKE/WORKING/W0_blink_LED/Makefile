@@ -5,10 +5,10 @@ OFILES = kernel.o stm32f103_startup.o
 
 all : blink_LED.elf
 
-kernel.o : src/kernel.c
+kernel.o : Src/kernel.c
 	$(CC) $(CFLAGS) $^ -o build/$@
 	
-stm32f103_startup.o : startup_linker/stm32f103_startup.c
+stm32f103_startup.o : startup_linker/stm32F103_startup.c
 	$(CC) $(CFLAGS) $^ -o build/$@
 	
 blink_LED.elf : $(OFILES)

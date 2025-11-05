@@ -16,22 +16,22 @@ $(BUILD_DIR):
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-$(BUILD_DIR)/syscalls.o : src/syscalls.c | $(build_DIR)
+$(BUILD_DIR)/syscalls.o : Src/syscalls.c | $(build_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILD_DIR)/main.o : src/main.c | $(BUILD_DIR)
+$(BUILD_DIR)/main.o : Src/main.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILD_DIR)/stm32f103_startup.o : startup_linker/stm32f103_startup.c | $(BUILD_DIR)
+$(BUILD_DIR)/stm32f103_startup.o : startup_linker/stm32F103_startup.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILD_DIR)/USART.o : src/USART.c | $(BUILD_DIR)
+$(BUILD_DIR)/USART.o : Src/USART.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 	
-$(BUILD_DIR)/ADC.o : src/ADC.c | $(BUILD_DIR)
+$(BUILD_DIR)/ADC.o : Src/ADC.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 	
-$(BUILD_DIR)/systick.o : src/systick.c | $(BUILD_DIR)
+$(BUILD_DIR)/systick.o : Src/SYSTICK.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(BIN_DIR)/systick_built_in_timer.elf : $(OFILES) | $(BIN_DIR)

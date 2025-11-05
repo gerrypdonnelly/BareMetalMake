@@ -5,11 +5,11 @@ OFILES = main.o stm32f103_startup.o
 
 all : LED_blink_off_board.elf
 
-main.o : src/main.c
+main.o : Src/main.c
 	$(CC) $(CFLAGS) $^ -o build/$@
 	
-stm32f103_startup.o : startup_linker/stm32f103_startup.c
-	$(CC) $(CFLAGS) $^ -o build\$@
+stm32f103_startup.o : startup_linker/stm32F103_startup.c
+	$(CC) $(CFLAGS) $^ -o build/$@
 	
 LED_blink_off_board.elf : $(OFILES)
 	$(CC) $(LFLAGS)  build/stm32f103_startup.o build/main.o -o bin/LED_blink_off_board.elf 
