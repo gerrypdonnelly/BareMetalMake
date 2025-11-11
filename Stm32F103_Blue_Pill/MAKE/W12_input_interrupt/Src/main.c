@@ -30,7 +30,7 @@ with systick being coretex-m peripheral references can be found in https://devel
 #include "ADC.h"
 #include "USART.h"
 #include "SYSTICK.h"
-#include "TIMER.h"
+#include "Timer.h"
 
 
 

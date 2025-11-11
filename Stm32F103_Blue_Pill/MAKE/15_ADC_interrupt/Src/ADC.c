@@ -6,7 +6,7 @@
  */
 
 #include "stm32f103xb.h"
-#include "adc.h"
+#include "ADC.h"
 
 #define GPIOAEN (1U<<2)
 #define ADC1EN (1U<<9)

@@ -27,9 +27,9 @@ with systick being coretex-m peripheral references can be found in https://devel
 #include <stdio.h>
 #include "stm32f103xb.h"
 #include "ADC.h"
-#include "USART.h"
+#include "usart.h"
 #include "SYSTICK.h"
-#include "TIMER.h"
+#include "Timer.h"
 
 
 #define LED (1U<<2)

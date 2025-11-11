@@ -1,4 +1,4 @@
-#include "usart.h"
+#include "USART.h"
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
