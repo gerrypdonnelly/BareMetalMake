@@ -31,27 +31,33 @@ with systick being coretex-m peripheral references can be found in https://devel
 #include "USART.h"
 #include "SYSTICK.h"
 #include "Timer.h"
+#include "exti.h"
 
 
 
-int timestamp = 0;
 
 
-//setup : connect jumper wire from PB0 to PB9
-//timer 4 should toggle every 1000
 int main(void)
 {
 
-	Tim3_PB0_output_compare();
-	Tim4_PB9_input_capture();
 
 
 	while(1)
 	{
-		//wait until edge is captured
-		while((TIM4->SR & SR_CC4IF)) {}
-		//read the captured counter value
-		timestamp = TIM4->CCR4;
+
+	}
+
+	//To get the name of the vector function look in the startup file at teh vector table.
+	void EXTI0_IRQHandler(void)
+	{
+		//Check if the interrupt is from PA0
+		if(EXTI->PR &(1U<<0))
+		{
+			//Toggle LED PB2
+			GPIOB->ODR ^=(1U<<2);
+			//Clear pending bit by writing 1 to it
+			EXTI->PR |=(1U<<0);
+		};
 	}
 }
 

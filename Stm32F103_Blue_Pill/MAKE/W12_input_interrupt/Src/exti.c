@@ -32,8 +32,9 @@ void PA0_exti_init(void)
 	RCC->APB2ENR |=(1U<<2);		//Enable clock access for GPIO A
 	GPIOA->CRL &=~(1U<<0); 		//Ensure pin as configured as input
 	GPIOA->CRL &=~(1U<<1); 		//Ensure pin as configured as input
-	AFIO_EX &=~(1U<<0);//Select port a for exti  Fuck knows !!??!
-	EXTI->IMR |=(1U<<0);		//Unmask exti
+	AFIO->EXTICR[0] &=~AFIO_EXTICR1_EXTI0; //Select porta for exti by ensuring all 0
+	EXTI->IMR |=(1U<<0);		//Unmask interrupt exti
+	
 	EXTI->RTSR |=(1U<<0);		//Select rising edge trigger
 	NVIC_EnableIRQ(EXTI0_IRQn);	//Enable exti in NVIC	
 

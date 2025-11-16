@@ -22,7 +22,7 @@ $(BUILD_DIR)/syscalls.o : Src/syscalls.c | $(build_DIR)
 $(BUILD_DIR)/main.o : Src/main.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILD_DIR)/stm32f103_startup.o : startup_linker/stm32F103_startup.c | $(BUILD_DIR)
+$(BUILD_DIR)/stm32f103_startup.o : startup_linker/startup_stm32f103c8tx.s | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(BUILD_DIR)/exti.o : Src/exti.c | $(BUILD_DIR)
