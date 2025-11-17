@@ -12,7 +12,7 @@ LED PB2 APB2
 
 #include "exti.h"
 
-void PA0_exti_init(void)
+void PC13_exti_init(void)
 {
 	// Disable global interrupts
 	// Enable the AFIO clock
@@ -25,15 +25,33 @@ void PA0_exti_init(void)
 	// Enable exti in NVIC
 	// Enable global interrupts
 
-	__disable_irq();						// Disable global interrupts
-	RCC->APB2ENR |= (1U << 0);				// Enable the AFIO clock
-	RCC->APB2ENR |= (1U << 2);				// Enable clock access for GPIO A
-	GPIOA->CRL &= ~(1U << 0);				// Ensure pin as configured as input
-	GPIOA->CRL &= ~(1U << 1);				// Ensure pin as configured as input
-	AFIO->EXTICR[0] &= ~AFIO_EXTICR1_EXTI0; // Select porta for exti by ensuring all 0
-	EXTI->IMR |= (1U << 0);					// Unmask interrupt exti
-	EXTI->RTSR |= (1U << 0);				// Select rising edge trigger
-	NVIC_EnableIRQ(EXTI0_IRQn);				// Enable exti in NVIC
+	__disable_irq(); // Disable global interrupts
+
+	/* Enable clocks */
+	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+	RCC->APB2ENR |= RCC_APB2ENR_IOPCEN;
+	RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+
+	/* --- Configure PB2 LED as push-pull output --- */
+	// Clear bits
+	GPIOB->CRL &= ~(0xF << (2 * 4));
+	// MODE = 2MHz output (0b10), CNF = push-pull (0b00)
+	GPIOB->CRL |= (0x2 << (2 * 4));
+
+	/* --- Configure PC13 as input (floating) --- */
+	// Important: the onboard button pulls PC13 to GND when pressed
+	GPIOC->CRH &= ~(0xF << ((13 - 8) * 4));
+	GPIOC->CRH |= (0x4 << ((13 - 8) * 4)); // Input floating
+
+	/* --- Configure EXTI13 for PC13 --- */
+	AFIO->EXTICR[3] &= ~(0xF << 4); // Clear EXTI13 bits
+	AFIO->EXTICR[3] |= (0x2 << 4);	// Map EXTI13 to PORTC (0x2)
+
+	EXTI->IMR |= (1 << 13);	  // Unmask EXTI13
+	EXTI->FTSR |= (1 << 13);  // Falling edge trigger (button press)
+	EXTI->RTSR &= ~(1 << 13); // No rising edge
+
+	NVIC_EnableIRQ(EXTI15_10_IRQn); // EXTI 10–15 handler
 
 	__enable_irq(); // Enable global interrupts
 }

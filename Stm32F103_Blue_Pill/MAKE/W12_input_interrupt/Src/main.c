@@ -33,32 +33,24 @@ with systick being coretex-m peripheral references can be found in https://devel
 #include "Timer.h"
 #include "exti.h"
 
-
-
-
+void EXTI0_IRQHandler(void);
 
 int main(void)
 {
+	PC13_exti_init();
 
-
-
-	while(1)
+	while (1)
 	{
-
 	}
 
-	//To get the name of the vector function look in the startup file at teh vector table.
+	// To get the name of the vector function look in the startup file at the vector table.
 	void EXTI0_IRQHandler(void)
 	{
-		//Check if the interrupt is from PA0
-		if(EXTI->PR &(1U<<0))
+		if (EXTI->PR & (1 << 13)) // Check pending flag
 		{
-			//Toggle LED PB2
-			GPIOB->ODR ^=(1U<<2);
-			//Clear pending bit by writing 1 to it
-			EXTI->PR |=(1U<<0);
-		};
+			GPIOB->ODR ^= (1 << 2); // Toggle LED PB2
+
+			EXTI->PR |= (1 << 13); // Clear the flag
+		}
 	}
 }
-
-
