@@ -5,7 +5,7 @@ LFLAGS = -T startup_linker/stm32F103_linker_script.ld -nostartfiles -Wl,-Map=$(B
 BUILD_DIR = build
 BIN_DIR = bin
 
-OFILES = $(BUILD_DIR)/main.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/USART.o $(BUILD_DIR)/ADC.o $(BUILD_DIR)/exti.o $(BUILD_DIR)/systick.o $(BUILD_DIR)/timer.o $(BUILD_DIR)/syscalls.o 
+OFILES = $(BUILD_DIR)/main.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/USART.o $(BUILD_DIR)/ADC.o $(BUILD_DIR)/exti.o $(BUILD_DIR)/systick.o $(BUILD_DIR)/timer.o  
 
 
 all : $(BIN_DIR)/input_interrupt.elf
@@ -16,13 +16,10 @@ $(BUILD_DIR):
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-$(BUILD_DIR)/syscalls.o : Src/syscalls.c | $(build_DIR)
-	$(CC) $(CFLAGS) $^ -o $@
-
 $(BUILD_DIR)/main.o : Src/main.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILD_DIR)/stm32f103_startup.o : startup_linker/startup_stm32f103c8tx.s | $(BUILD_DIR)
+$(BUILD_DIR)/stm32f103_startup.o : startup_linker/stm32F103_startup.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(BUILD_DIR)/exti.o : Src/exti.c | $(BUILD_DIR)
