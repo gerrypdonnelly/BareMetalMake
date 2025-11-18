@@ -5,7 +5,7 @@ LFLAGS = -T startup_linker/stm32F103_linker_script.ld -nostartfiles -Wl,-Map=$(B
 BUILD_DIR = build
 BIN_DIR = bin
 
-OFILES = $(BUILD_DIR)/main.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/UART.o $(BUILD_DIR)/syscalls.o
+OFILES = $(BUILD_DIR)/main.o $(BUILD_DIR)/stm32F103_startup.o $(BUILD_DIR)/UART.o 
 
 
 all : $(BIN_DIR)/Rx_interrupt.elf
@@ -17,19 +17,17 @@ $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
 
-$(BUILD_DIR)/main.o : src/main.c | $(BUILD_DIR)
+$(BUILD_DIR)/main.o : Src/main.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILD_DIR)/stm32f103_startup.o : src/stm32f103_startup.c | $(BUILD_DIR)
+$(BUILD_DIR)/stm32F103_startup.o : startup_linker/stm32F103_startup.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
 
-$(BUILD_DIR)/UART.o : src/UART.c | $(BUILD_DIR)
+$(BUILD_DIR)/UART.o : Src/UART.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 	
-$(BUILD_DIR)/syscalls.o : startup_linker/syscalls.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $^ -o $@	
-	
+
 $(BIN_DIR)/Rx_interrupt.elf : $(OFILES) | $(BIN_DIR)
 	$(CC) $(LFLAGS) $^ -o $@
 
