@@ -5,7 +5,7 @@ OFILES = main.o stm32f103_startup.o
 
 all : uart_rx_into_buffer.elf
 
-main.o : Src/main.c
+main.o : Src/kernel.c
 	$(CC) $(CFLAGS) $^ -o build/$@
 	
 stm32f103_startup.o : startup_linker/stm32F103_startup.c

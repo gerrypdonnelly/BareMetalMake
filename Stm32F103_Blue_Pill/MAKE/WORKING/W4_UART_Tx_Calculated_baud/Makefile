@@ -5,7 +5,7 @@ OFILES = main.o stm32f103_startup.o
 
 all : uart_tx_calculated_baud.elf
 
-main.o : Src/main.c
+main.o : Src/kernel.c
 	$(CC) $(CFLAGS) $^ -o build/$@
 	
 stm32f103_startup.o : startup_linker/stm32F103_startup.c
