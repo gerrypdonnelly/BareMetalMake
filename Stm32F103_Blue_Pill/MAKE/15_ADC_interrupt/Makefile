@@ -5,7 +5,7 @@ LFLAGS = -T startup_linker/stm32F103_linker_script.ld -nostartfiles -Wl,-Map=$(B
 BUILD_DIR = build
 BIN_DIR = bin
 
-OFILES = $(BUILD_DIR)/main.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/USART.o $(BUILD_DIR)/ADC.o $(BUILD_DIR)/syscalls.o
+OFILES = $(BUILD_DIR)/main.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/USART.o $(BUILD_DIR)/ADC.o 
 
 
 all : $(BIN_DIR)/ADC_Interrupt.elf
@@ -31,9 +31,6 @@ $(BUILD_DIR)/USART.o : Src/USART.c | $(BUILD_DIR)
 $(BUILD_DIR)/ADC.o : Src/ADC.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 	
-$(BUILD_DIR)/syscalls.o : Src/syscalls.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $^ -o $@	
-		
 $(BIN_DIR)/ADC_Interrupt.elf : $(OFILES) | $(BIN_DIR)
 	$(CC) $(LFLAGS) $^ -o $@
 
