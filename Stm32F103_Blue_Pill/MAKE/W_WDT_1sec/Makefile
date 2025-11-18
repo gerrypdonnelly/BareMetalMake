@@ -5,7 +5,7 @@ LFLAGS = -T startup_linker/stm32F103_linker_script.ld -nostartfiles -Wl,-Map=$(B
 BUILD_DIR = build
 BIN_DIR = bin
 
-OFILES = $(BUILD_DIR)/main.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/USART.o $(BUILD_DIR)/WDT.o $(BUILD_DIR)/syscalls.o 
+OFILES = $(BUILD_DIR)/kernel.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/USART.o $(BUILD_DIR)/WDT.o  
 
 
 all : $(BIN_DIR)/WDT_1sec.elf
@@ -16,20 +16,17 @@ $(BUILD_DIR):
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-$(BUILD_DIR)/syscalls.o : src/syscalls.c | $(build_DIR)
+$(BUILD_DIR)/kernel.o : Src/kernel.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILD_DIR)/main.o : src/main.c | $(BUILD_DIR)
+$(BUILD_DIR)/stm32f103_startup.o : startup_linker/stm32F103_startup.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(BUILD_DIR)/stm32f103_startup.o : startup_linker/stm32f103_startup.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $^ -o $@
-
-$(BUILD_DIR)/USART.o : src/USART.c | $(BUILD_DIR)
+$(BUILD_DIR)/USART.o : Src/USART.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
 
-$(BUILD_DIR)/WDT.o : src/WDT.c | $(BUILD_DIR)
+$(BUILD_DIR)/WDT.o : Src/WDT.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 	
 $(BIN_DIR)/WDT_1sec.elf : $(OFILES) | $(BIN_DIR)

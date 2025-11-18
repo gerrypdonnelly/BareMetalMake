@@ -1,6 +1,6 @@
 #include "stm32f103xb.h"
 #include <stdint.h>
-#include "usart.h"
+#include "USART.h"
 #include "WDT.h"
 
 int main(void)
