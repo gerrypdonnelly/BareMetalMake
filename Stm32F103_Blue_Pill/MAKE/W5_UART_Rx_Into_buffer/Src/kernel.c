@@ -17,25 +17,23 @@ When the buffer is full print buffer contents to screen
 #include <stdint.h>
 #include "retarget.h" // Assuming you have retarget.h with _write and _read
 
-
 // Array to store received data
-//#define BUFFER_SIZE  16
-//uint8_t Data_rec[BUFFER_SIZE];
-//volatile uint16_t data_index = 0;
-
+#define BUFFER_SIZE 16
+uint8_t Data_rec[BUFFER_SIZE];
+volatile uint16_t data_index = 0;
 
 // USART1 IRQ Handler
 void USART1_IRQHandler(void)
 {
-    if (USART1->SR & USART_SR_RXNE)								// Check if RXNE (Read data register not empty) flag is set
-    	{
-        	uint8_t received_char = USART1->DR;					// Read received char from DR register
-        //	uart_transmit(received_char);
-        //	if (data_index < BUFFER_SIZE)						// Store the byte in Data_rec array if there is space
-        //			Data_rec[data_index++] = received_char;
-        //	if (data_index > BUFFER_SIZE)
-        //			data_index = 0;								//Point to start of array again
-    	}
+    if (USART1->SR & USART_SR_RXNE) // Check if RXNE (Read data register not empty) flag is set
+    {
+        uint8_t received_char = USART1->DR; // Read received char from DR register
+                                            //	uart_transmit(received_char);
+                                            //	if (data_index < BUFFER_SIZE)						// Store the byte in Data_rec array if there is space
+                                            //			Data_rec[data_index++] = received_char;
+                                            //	if (data_index > BUFFER_SIZE)
+                                            //			data_index = 0;								//Point to start of array again
+    }
 }
 
 void print_message(const char *message)
@@ -43,7 +41,7 @@ void print_message(const char *message)
     printf("Message: %s\n", message); // Will use your retargeted _write
 }
 
-void get_input() 
+void get_input()
 {
     char input[100];
     printf("Enter input: ");
@@ -64,19 +62,19 @@ uint8_t main(void)
         {
             while (!(USART1->SR & USART_SR_TXE))
             {
-            };            // Wait until TX buffer is empty
+            }; // Wait until TX buffer is empty
             printf("\n"); // Go to new line on screen
 
             for (uint8_t i = 0; i < BUFFER_SIZE; i++)
             {
                 while (!(USART1->SR & USART_SR_TXE))
                 {
-                };                   // Wait until TX buffer is empty
+                }; // Wait until TX buffer is empty
                 printf(Data_rec[i]); // Transmit Array element
             }
             while (!(USART1->SR & USART_SR_TXE))
             {
-            };            // Wait until TX buffer is empty
+            }; // Wait until TX buffer is empty
             printf("\n"); // Transmit new line
             // for (int i = 0; i < 100000; i++);  			// Simple delay
             data_index = 0;
