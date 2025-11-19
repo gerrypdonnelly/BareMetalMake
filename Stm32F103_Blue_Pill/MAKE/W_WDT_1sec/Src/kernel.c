@@ -19,13 +19,15 @@ int main(void)
     while (1)
     {
         // Turn on and off the LED with a delay
-        for (volatile uint16_t i = 0; i < 50000; i++)
+        for (volatile uint16_t i = 0; i < 5000; i++)
             ;                     // Simulated workload
-        GPIOB->ODR &= ~(1U << 0); // Turn on LED
-        for (volatile uint16_t i = 0; i < 50000; i++)
+        GPIOB->ODR &= ~(1U << 0); // Turn off LED
+
+        for (volatile uint16_t i = 0; i < 5000; i++)
             ;                    // Simulated workload
         GPIOB->ODR |= (1U << 0); // Turn on LED
-        for (volatile uint16_t i = 0; i < 1000000; i++)
+
+        for (volatile uint16_t i = 0; i < 100; i++)
             ;           // Simulated workload
         IWDG_Refresh(); // Reset the watchdog to prevent system reset
     }
