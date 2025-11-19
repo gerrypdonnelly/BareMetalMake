@@ -204,27 +204,25 @@ void Default_Handler(void)
     }
 }
 //Entry point
-void Reset_Handler(void)  //Here we copy the data from flash to sram
+void Reset_Handler(void)
 {
-	uint32_t data_mem_size = (uint32_t)&_edata -(uint32_t)&_sdata;  //memory size is calculated from _sdata and _edata being = .
-	uint32_t bss_mem_size = (uint32_t)&_ebss -(uint32_t)&_sbss;
+    uint32_t data_words = ((uint32_t)&_edata - (uint32_t)&_sdata) / 4;
+    uint32_t bss_words  = ((uint32_t)&_ebss  - (uint32_t)&_sbss) / 4;
 
-  uint32_t *p_src_mem = (uint32_t *)&_etext;  //create a pointer to the start of the text section which is in flash
-  uint32_t *p_dest_mem = (uint32_t *)&_edata; //create a pointer to the start of the data section which is in ram /sram
+    uint32_t *src  = (uint32_t *)&_etext;   // FLASH
+    uint32_t *dest = (uint32_t *)&_sdata;   // RAM
 
-  for(uint32_t i =0; i < data_mem_size; i++) //This for loop copies the data from flash to ram 
-    {
-      //copy data sections from FLASH to SRAM and increment pointer after execution of line
-      *p_dest_mem++ = *p_src_mem++;  
-    }
-    p_dest_mem = (uint32_t *)&_sbss;  //next point tp start of bss section
+    // Copy .data
+    for (uint32_t i = 0; i < data_words; i++)
+        *dest++ = *src++;
 
-  for(uint32_t i = 0; i < bss_mem_size; i++)  //go through the bss section and make everything 0
-    {
-      //Set bss setion to zero
-      *p_dest_mem++ = 0;
-    }  
-    //system init is called or branched to from here
-	//some systems call SystemInit() function to set up clock sources before main.
+    // Zero .bss
+    dest = (uint32_t *)&_sbss;
+    for (uint32_t i = 0; i < bss_words; i++)
+        *dest++ = 0;
+
+    // Optional system clock setup
+    // SystemInit();
+
     main();
 }
