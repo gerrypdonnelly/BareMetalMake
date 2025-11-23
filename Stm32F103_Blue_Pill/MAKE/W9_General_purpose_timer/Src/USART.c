@@ -14,6 +14,8 @@ void USART1_Init(void)
 {
     // Enable clock for GPIOA and USART1
     RCC->APB2ENR |= (RCC_APB2ENR_IOPAEN | RCC_APB2ENR_USART1EN);
+    RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+
 
     // Configure PA9 (TX) as Alternate function push-pull
     GPIOA->CRH &= ~(1U<<4);

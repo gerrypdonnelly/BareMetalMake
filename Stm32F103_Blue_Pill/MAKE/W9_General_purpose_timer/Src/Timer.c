@@ -27,6 +27,8 @@
 
 #define TIM2EN (1U<<0)
 #define CR1_CEN (1U<<0)
+#define SR_UIF (1U<<0)
+
 
 //Uses Timer2 to time out every one second 1Hz
 void Tim2_1hz_init(void)
