@@ -26,9 +26,12 @@ void USART1_Init(void);
 void USART1_SendByte(uint8_t b);
 void USART1_SendBuffer(uint8_t *buf, uint16_t len);
 void ClearBuffer(uint8_t *buf, uint16_t len);
+void SystemClock_72MHz(void);
+
 
 int main(void)
 {
+    SystemClock_72MHz();
     GPIO_Init();
     USART1_Init();
 
@@ -42,6 +45,9 @@ int main(void)
 void GPIO_Init(void)
 {
     RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+
+    RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+    AFIO->MAPR &= ~AFIO_MAPR_USART1_REMAP; // No remap
 
     // PA9 = TX, AF push-pull, 50 MHz
     GPIOA->CRH &= ~(0xF << 4); 
@@ -57,13 +63,16 @@ void USART1_Init(void)
 {
     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
-    USART1->BRR = 72000000 / 9600;   // Baud = 9600 @ 72 MHz
+    // Detect whether PLL is used (i.e., HSE succeeded)
+    uint32_t clock = (RCC->CFGR & RCC_CFGR_SWS_PLL) ? 72000000UL : 8000000UL;
 
-    USART1->CR1 |= USART_CR1_RXNEIE; // Enable interrupt on RX
-    USART1->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
+    USART1->BRR = clock / 9600;  // Correct for both 8 MHz and 72 MHz
 
+    USART1->CR1 |= USART_CR1_RXNEIE;
     NVIC_EnableIRQ(USART1_IRQn);
+    USART1->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
 }
+
 
 /* -------------------- Send one byte -------------------- */
 void USART1_SendByte(uint8_t b)
@@ -108,4 +117,31 @@ void USART1_IRQHandler(void)
             rec_index = 0;
         }
     }
+}
+
+void SystemClock_72MHz(void)
+{
+    // Enable HSE
+    RCC->CR |= RCC_CR_HSEON;
+
+    uint32_t timeout = 0;
+    while(!(RCC->CR & RCC_CR_HSERDY) && timeout < 0x20000)
+        timeout++;
+
+    if(!(RCC->CR & RCC_CR_HSERDY))
+    {
+        // HSE FAILED → FALL BACK TO HSI
+        // (8 MHz internal RC)
+        return;
+    }
+
+    FLASH->ACR |= FLASH_ACR_LATENCY_2;
+
+    RCC->CFGR |= RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL9;
+
+    RCC->CR |= RCC_CR_PLLON;
+    while(!(RCC->CR & RCC_CR_PLLRDY));
+
+    RCC->CFGR |= RCC_CFGR_SW_PLL;
+    while((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL);
 }
