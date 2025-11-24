@@ -10,32 +10,31 @@
 
 #define GPIOAEN (1U<<2)
 #define ADC1EN (1U<<9)
-#define ADC_CH1 (1U<<0)  //equates to 1 in binary which is channel 1
+#define ADC_CH1 (1U<<0)  					//equates to 1 in binary which is channel 1
 #define ADC_SEQ_LEN_1 0x00
-#define CR2_ADON (1U<<0) //bit 0 that turns on and off ADC
-#define SR_EOC (1U<<1) //End of conversion bit
+#define CR2_ADON (1U<<0) 					//bit 0 that turns on and off ADC
+#define SR_EOC (1U<<1) 						//End of conversion bit
 
 void pa1_adc_init(void)
 {
 
-	RCC->APB2ENR |= GPIOAEN; //Enable clock access to GPIOA port
-	RCC->APB2ENR |= ADC1EN;//Enable clock access to ADC
-	GPIOA->CRL &=~(1U<<7);//Configure ADC GPIO PA1 pin 11 as analog pin MODE input 0:0  CNF analog 0:0
+	RCC->APB2ENR |= GPIOAEN; 				//Enable clock access to GPIOA port
+	RCC->APB2ENR |= ADC1EN;					//Enable clock access to ADC
+	GPIOA->CRL &=~(1U<<7);					//Configure ADC GPIO PA1 pin 11 as analog pin MODE input 0:0  CNF analog 0:0
 	GPIOA->CRL &=~(1U<<6);
 	GPIOA->CRL &=~(1U<<5);
 	GPIOA->CRL &=~(1U<<4);
 
 	/*configure ADC peripheral*/
 	//Enable the ADC module
-	ADC1->CR2 |= CR2_ADON;  //ADC_CR2 bit 0 ADON enables and disables ADC
-	ADC1->SMPR2 |= ADC_SMPR2_SMP1;       // Set sampling time for channel 1 to 239.5 cycles (for accuracy)
+	ADC1->CR2 |= CR2_ADON;  				//ADC_CR2 bit 0 ADON enables and disables ADC
+	ADC1->SMPR2 |= ADC_SMPR2_SMP1;       	//Set sampling time for channel 1 to 239.5 cycles (for accuracy)
 	// Calibration
-	ADC1->CR2 |= ADC_CR2_CAL;            // Start calibration
-	while (ADC1->CR2 & ADC_CR2_CAL);     // Wait for calibration to complete
+	ADC1->CR2 |= ADC_CR2_CAL;            	//Start calibration
+	while (ADC1->CR2 & ADC_CR2_CAL);     	//Wait for calibration to complete
 	//Configure ADC parameters
-
-
-
+	ADC1->SQR1 &= ~ADC_SQR1_L;           	//Set regular channel sequence length to 1
+	
 }
 
 
