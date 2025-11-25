@@ -4,7 +4,7 @@ Key PA0
 LED PB2 APB2
 Setting USART PA9 Tx connected to Rx FTDI Yellow
 Setting USART PA10 Rx connected to Tx FTDI Orange
-ADC PA1 is the analog in pin.  Connecting to 
+ADC PA1 is the analog in pin.  Connecting to
 
 Single-channel single conversion ---- Get analog value once
 Single-channel continuous conversion ---- Get analog value repeatedly
@@ -18,13 +18,11 @@ Injected continuous ----  Triggered by external or software has priority over ot
 #include "ADC.h"
 #include "USART.h"
 
-
 int __io_putchar(int ch)
 {
 	UART_write(ch);
 	return ch;
 }
-
 
 uint16_t sensor_value;
 
@@ -32,16 +30,30 @@ int main(void)
 {
 	USART1_Init();
 	pa1_adc_init();
-	//Start_conversion(); add this line here for one single conversion and comment it out in adc_read()
+	// Start_conversion(); // add this line here for one single conversion and comment it out in adc_read()
 
-	while(1)
+	while (1)
 	{
-
+		// Start_conversion(); // For continuous conversion comment this line out and add in adc_read().
 		sensor_value = adc_read();
+		UART_write('S');
+		UART_write('e');
+		UART_write('n');
+		UART_write('s');
+		UART_write('o');
+		UART_write('r');
+		UART_write(' ');
+		UART_write('v');
+		UART_write('a');
+		UART_write('l');
+		UART_write('u');
+		UART_write('e');
+		UART_write(' ');
+		UART_write(':');
+		UART_write(' ');
 		UART_write(sensor_value);
 		UART_write('\n');
-		//printf("Sensor value : %d \n", (int)sensor_value);//as sensor value is uint32_t it will throw an error so type cast sensor value to int.
+
+		// printf("Sensor value : %d \n", (int)sensor_value);//as sensor value is uint32_t it will throw an error so type cast sensor value to int.
 	}
 }
-
-
