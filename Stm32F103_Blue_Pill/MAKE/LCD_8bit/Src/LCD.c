@@ -2,17 +2,17 @@
  ******************************************************************************
 LCD interface
 Data bits
-RS =
-RW =
-E  =
-D0 = PA8
+RS = PB14
+RW = PB15
+E  = PB6
+D0 = PB10
 D1 = PA9
 D2 = PA10
 D3 = PA11
 D4 = PA12
-D5 = PB6
-D6 = PB7
-D7 = PB8
+D5 = PB8
+D6 = PB12
+D7 = PB13
 
  ******************************************************************************
  */
@@ -20,28 +20,43 @@ D7 = PB8
 #include "stm32f103xb.h"
 #include "LCD.h"
 
-#define RS_Pin 0
-#define RS_Port GPIOA
-#define RW_Pin 1
-#define RW_Port GPIOA
-#define E_Pin 2
-#define E_Port GPIOA
-#define LCDD5Pin 6
+// Pin and port configurations for LCD data pins and control pins
+#define LCDD0Pin 10
+#define LCDD0Port GPIOB
+#define LCDD1Pin 4
+#define LCDD1Port GPIOB
+#define LCDD2Pin 5
+#define LCDD2Port GPIOB
+#define LCDD3Pin 7
+#define LCDD3Port GPIOB
+#define LCDD4Pin 9
+#define LCDD4Port GPIOB
+#define LCDD5Pin 8
 #define LCDD5Port GPIOB
-#define LCDD6Pin 7
+#define LCDD6Pin 12
 #define LCDD6Port GPIOB
-#define LCDD7Pin 8
+#define LCDD7Pin 13
 #define LCDD7Port GPIOB
-#define LCDD0Pin 8
-#define LCDD0Port GPIOA
-#define LCDD1Pin 9
-#define LCDD1Port GPIOA
-#define LCDD2Pin 10
-#define LCDD2Port GPIOA
-#define LCDD3Pin 11
-#define LCDD3Port GPIOA
-#define LCDD4Pin 12
-#define LCDD4Port GPIOA
+
+#define RS_Pin 14
+#define RS_Port GPIOB
+#define RW_Pin 15
+#define RW_Port GPIOB
+#define E_Pin 6
+#define E_Port GPIOB
+
+// Old function implementations
+void LCD_init(void)
+{
+    // Using GPIOA8 to GPIOA12 and GPIOB6 to GPIOB8 as output
+    RCC->APB2ENR |= (1U << 4); // Enable clock to port c
+    RCC->APB2ENR |= (1U << 3); // Enable clock to port B
+    // Set Mode and CNF of data pins to output max speed 50Mhz
+    GPIOC->CRH = 0x30000000; // PC15
+    // Set Mode and CNF of control pins to output max speed 50Mhz
+    GPIOB->CRH = 0x33330303; // PB8, PB10, PB12, PB13, PB14, PB15
+    GPIOB->CRL = 0x33300000; // PB5, PB6, PB7
+}
 
 void SendBitToPortAndPin(GPIO_TypeDef *port, int pinNumber, uint8_t bitState)
 {
@@ -66,6 +81,7 @@ void SendCharachterToTheLCDDataPins(char character)
     SendBitToPortAndPin(LCDD6Port, LCDD6Pin, character & 0b01000000);
     SendBitToPortAndPin(LCDD7Port, LCDD7Pin, character & 0b10000000);
 }
+
 void ToggleEnablePin()
 {
     SendBitToPortAndPin(E_Port, E_Pin, 1);
@@ -87,7 +103,8 @@ void SendDataToLCD(uint8_t data)
     SendCharachterToTheLCDDataPins(data);
     ToggleEnablePin();
 }
-void InitializeLCD()
+
+void InitializeLCD(void)
 {
     for (volatile int i = 0; i < 50000; i++)
         ; // Wait for more than 40ms after VCC rises to 2.7V

@@ -34,7 +34,7 @@ int main(void)
 
 	while (1)
 	{
-		// Start_conversion(); // For continuous conversion comment this line out and add in adc_read().
+		Start_conversion(); // For continuous conversion comment this line out and add in adc_read().
 		sensor_value = adc_read();
 		UART_write('S');
 		UART_write('e');

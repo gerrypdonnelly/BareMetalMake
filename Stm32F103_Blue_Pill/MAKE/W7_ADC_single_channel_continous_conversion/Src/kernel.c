@@ -12,18 +12,16 @@ Multi-channel continuous ---- Get analog value from multiple channels continuall
 Injected continuous ----  Triggered by external or software has priority over other types/modes
  ******************************************************************************
  */
-#include <stdio.h>
+// #include <stdio.h>
 #include "stm32f103xb.h"
 #include "ADC.h"
 #include "USART.h"
-
 
 int __io_putchar(int ch)
 {
 	UART_write(ch);
 	return ch;
 }
-
 
 uint16_t sensor_value;
 
@@ -33,12 +31,10 @@ int main(void)
 	pa1_adc_init();
 	Start_conversion();
 
-	while(1)
+	while (1)
 	{
 
 		sensor_value = adc_read();
-		printf("Sensor value : %d \n", (int)sensor_value);//as sensor value is uint32_t it will throw an error so type cast sensor value to int.
+		// printf("Sensor value : %d \n", (int)sensor_value);//as sensor value is uint32_t it will throw an error so type cast sensor value to int.
 	}
 }
-
-

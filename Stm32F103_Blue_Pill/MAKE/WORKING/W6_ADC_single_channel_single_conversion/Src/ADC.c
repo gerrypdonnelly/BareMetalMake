@@ -43,24 +43,23 @@ void pa1_adc_init(void)
 							   // This takes 1111 and shifts left 20 bits to clear bits 20-23
 							   // Set trigger to software start
 
+	ADC1->CR2 |= CR2_ADON;		   // ADC_CR2 bit 0 ADON enables and disables ADC
+	ADC1->SMPR2 |= ADC_SMPR2_SMP1; // Set sampling time for channel 1 to 239.5 cycles (for accuracy)
+	ADC1->CR2 |= ADC_CR2_ADON;	   // Turn on the ADC
+	// Calibration
+	ADC1->CR2 |= ADC_CR2_CAL; // Start calibration
+	while (ADC1->CR2 & ADC_CR2_CAL)
+		; // Wait for calibration to complete
+}
+
+void Start_conversion(void)
+{
+	// Uncomment this block for external trigger conversion STM32F1 does not have EXTSEL bits for software start
 	// On Stm32F1 ADC, the SWSTART bit is used to start conversions when the EXTSEL bits are set to 111 (software start).
 	ADC1->CR2 &= ~(7U << 17); // Clear EXTSEL bits
 	ADC1->CR2 |= (7U << 17);  // Set EXTSEL bits to 111 for SWSTART
 	ADC1->CR2 |= (1U << 20);  // Set EXTTRIG bit to 1 to enable external trigger conversion on regular channels
 
-	ADC1->CR2 |= CR2_ADON;		   // ADC_CR2 bit 0 ADON enables and disables ADC
-	ADC1->SMPR2 |= ADC_SMPR2_SMP1; // Set sampling time for channel 1 to 239.5 cycles (for accuracy)
-
-	// Calibration
-	ADC1->CR2 |= ADC_CR2_CAL; // Start calibration
-	while (ADC1->CR2 & ADC_CR2_CAL)
-		; // Wait for calibration to complete
-
-	ADC1->CR2 |= ADC_CR2_ADON; // Turn on the ADC
-}
-
-void Start_conversion(void)
-{
 	// Start ADC conversion
 	ADC1->CR2 |= CR2_SWSTART; // Set the SWSTART bit to start conversion
 }
@@ -68,7 +67,7 @@ void Start_conversion(void)
 uint16_t adc_read(void)
 {
 	// Start conversion
-	Start_conversion(); // For a single conversion comment this line out and add in to main.
+	// Start_conversion(); // For a single conversion comment this line out and add in to main.
 	// wait for conversion to finish
 	// go to status register and watch conversion complete flag ADC_SR bit 1 EOC
 	while (!(ADC1->SR & SR_EOC))
