@@ -23,27 +23,27 @@ D7 = PB13
 // Pin and port configurations for LCD data pins and control pins
 #define LCDD0Pin 10
 #define LCDD0Port GPIOB
-#define LCDD1Pin 4
+#define LCDD1Pin 11
 #define LCDD1Port GPIOB
-#define LCDD2Pin 5
+#define LCDD2Pin 12
 #define LCDD2Port GPIOB
-#define LCDD3Pin 7
+#define LCDD3Pin 13
 #define LCDD3Port GPIOB
-#define LCDD4Pin 9
+#define LCDD4Pin 14
 #define LCDD4Port GPIOB
-#define LCDD5Pin 8
+#define LCDD5Pin 15
 #define LCDD5Port GPIOB
-#define LCDD6Pin 12
+#define LCDD6Pin 5
 #define LCDD6Port GPIOB
-#define LCDD7Pin 13
+#define LCDD7Pin 6
 #define LCDD7Port GPIOB
 
-#define RS_Pin 14
+#define RS_Pin 8
 #define RS_Port GPIOB
-#define RW_Pin 15
+#define RW_Pin 9
 #define RW_Port GPIOB
-#define E_Pin 6
-#define E_Port GPIOB
+#define E_Pin 
+#define E_Port 
 
 // Old function implementations
 void LCD_init(void)
@@ -51,11 +51,48 @@ void LCD_init(void)
     // Using GPIOA8 to GPIOA12 and GPIOB6 to GPIOB8 as output
     RCC->APB2ENR |= (1U << 4); // Enable clock to port c
     RCC->APB2ENR |= (1U << 3); // Enable clock to port B
-    // Set Mode and CNF of data pins to output max speed 50Mhz
-    GPIOC->CRH = 0x30000000; // PC15
-    // Set Mode and CNF of control pins to output max speed 50Mhz
-    GPIOB->CRH = 0x33330303; // PB8, PB10, PB12, PB13, PB14, PB15
-    GPIOB->CRL = 0x33300000; // PB5, PB6, PB7
+    // Set Mode and CNF of pin C15 to output max speed 50Mhz
+    GPIOC->CRH |=(1<<28);//PC15
+    GPIOC->CRH |=(1<<29);//PC15
+    GPIOC->CRH &=~(1<<30);//PC15
+    GPIOC->CRH &=~(1<<31);//PC15 
+    // Set Mode and CNF of pins Pb5, PB6, PB7, PB8, B10, PB12, PB13, PB14, PB15 to output max speed 50Mhz
+    GPIOB->CRL |=(1<<20);//PB5
+    GPIOB->CRL |=(1<<21);//PB5
+    GPIOB->CRL &=~(1<<22);//PB5
+    GPIOB->CRL &=~(1<<23);//PB5  
+    GPIOB->CRL |=(1<<24);//PB6
+    GPIOB->CRL |=(1<<25);//PB6
+    GPIOB->CRL &=~(1<<26);//PB6
+    GPIOB->CRL &=~(1<<27);//PB6  
+    GPIOB->CRL |=(1<<28);//PB7
+    GPIOB->CRL |=(1<<29);//PB7
+    GPIOB->CRL &=~(1<<30);//PB7
+    GPIOB->CRL &=~(1<<31);//PB7
+    GPIOB->CRH |=(1<<0);//PB8
+    GPIOB->CRH |=(1<<1);//PB8
+    GPIOB->CRH &=~(1<<2);//PB8
+    GPIOB->CRH &=~(1<<3);//PB8  
+    GPIOB->CRH |=(1<<8);//PB10
+    GPIOB->CRH |=(1<<9);//PB10
+    GPIOB->CRH &=~(1<<10);//PB10
+    GPIOB->CRH &=~(1<<11);//PB10  
+    GPIOB->CRH |=(1<<16);//PB12
+    GPIOB->CRH |=(1<<17);//PB12
+    GPIOB->CRH &=~(1<<18);//PB12
+    GPIOB->CRH &=~(1<<19);//PB12  
+    GPIOB->CRH |=(1<<20);//PB13
+    GPIOB->CRH |=(1<<21);//PB13
+    GPIOB->CRH &=~(1<<22);//PB13
+    GPIOB->CRH &=~(1<<23);//PB13  
+    GPIOB->CRH |=(1<<24);//PB14
+    GPIOB->CRH |=(1<<25);//PB14
+    GPIOB->CRH &=~(1<<26);//PB14
+    GPIOB->CRH &=~(1<<27);//PB14  
+    GPIOB->CRH |=(1<<28);//PB15
+    GPIOB->CRH |=(1<<29);//PB15
+    GPIOB->CRH &=~(1<<30);//PB15
+    GPIOB->CRH &=~(1<<31);//PB15
 }
 
 void SendBitToPortAndPin(GPIO_TypeDef *port, int pinNumber, uint8_t bitState)
@@ -84,10 +121,10 @@ void SendCharachterToTheLCDDataPins(char character)
 
 void ToggleEnablePin()
 {
-    SendBitToPortAndPin(E_Port, E_Pin, 1);
+    SendBitToPortAndPin(RS_Port, RS_Pin, 1);
     for (volatile int i = 0; i < 1000; i++)
         ; // Small delay
-    SendBitToPortAndPin(E_Port, E_Pin, 0);
+    SendBitToPortAndPin(RS_Port, RS_Pin, 0);
     for (volatile int i = 0; i < 1000; i++)
         ; // Small delay
 }
