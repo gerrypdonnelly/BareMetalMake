@@ -2,17 +2,17 @@
  ******************************************************************************
 LCD interface
 Data bits
-RS = PB14
-RW = PB15
-E  = PB6
+RS = PB8
+RW = PB9
+E  = PC15
 D0 = PB10
-D1 = PA9
-D2 = PA10
-D3 = PA11
-D4 = PA12
-D5 = PB8
-D6 = PB12
-D7 = PB13
+D1 = PB11
+D2 = PB12
+D3 = PB13
+D4 = PB14
+D5 = PB15
+D6 = PB5
+D7 = PB6
 
  ******************************************************************************
  */
@@ -42,10 +42,10 @@ D7 = PB13
 #define RS_Port GPIOB
 #define RW_Pin 9
 #define RW_Port GPIOB
-#define E_Pin 
-#define E_Port 
+#define E_Pin 15
+#define E_Port GPIOC
 
-// Old function implementations
+// INitialize GPIO Ports for LCD
 void LCD_init(void)
 {
     // Using GPIOA8 to GPIOA12 and GPIOB6 to GPIOB8 as output
@@ -95,6 +95,8 @@ void LCD_init(void)
     GPIOB->CRH &=~(1<<31);//PB15
 }
 
+
+
 void SendBitToPortAndPin(GPIO_TypeDef *port, int pinNumber, uint8_t bitState)
 {
     if (bitState)
@@ -121,7 +123,7 @@ void SendCharachterToTheLCDDataPins(char character)
 
 void ToggleEnablePin()
 {
-    SendBitToPortAndPin(RS_Port, RS_Pin, 1);
+    SendBitToPortAndPin(E_Port, E_Pin, 1);
     for (volatile int i = 0; i < 1000; i++)
         ; // Small delay
     SendBitToPortAndPin(RS_Port, RS_Pin, 0);
