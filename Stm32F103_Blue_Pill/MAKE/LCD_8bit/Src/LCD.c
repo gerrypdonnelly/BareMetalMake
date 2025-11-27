@@ -48,15 +48,17 @@ D7 = PB6
 // INitialize GPIO Ports for LCD
 void LCD_init(void)
 {
-    // Using GPIOA8 to GPIOA12 and GPIOB6 to GPIOB8 as output
+    // uSING RCC TO ENABLE CLOCK FOR PORT B AND PORT C
     RCC->APB2ENR |= (1U << 4); // Enable clock to port c
     RCC->APB2ENR |= (1U << 3); // Enable clock to port B
-    // Set Mode and CNF of pin C15 to output max speed 50Mhz
+    // uSING GPIO TO SET THE PINS AS OUTPUT
+    // Set Mode and CNF of pin PC15 to output max speed 50Mhz
     GPIOC->CRH |=(1<<28);//PC15
     GPIOC->CRH |=(1<<29);//PC15
     GPIOC->CRH &=~(1<<30);//PC15
     GPIOC->CRH &=~(1<<31);//PC15 
-    // Set Mode and CNF of pins Pb5, PB6, PB7, PB8, B10, PB12, PB13, PB14, PB15 to output max speed 50Mhz
+    // uSING GPIO TO SET THE PINS AS OUTPUT
+    // Set Mode and CNF of pin PB5,PB6,PB8,PB9,PB10,PB12,PB13,PB14,PB15 to output max speed
     GPIOB->CRL |=(1<<20);//PB5
     GPIOB->CRL |=(1<<21);//PB5
     GPIOB->CRL &=~(1<<22);//PB5
@@ -65,18 +67,22 @@ void LCD_init(void)
     GPIOB->CRL |=(1<<25);//PB6
     GPIOB->CRL &=~(1<<26);//PB6
     GPIOB->CRL &=~(1<<27);//PB6  
-    GPIOB->CRL |=(1<<28);//PB7
-    GPIOB->CRL |=(1<<29);//PB7
-    GPIOB->CRL &=~(1<<30);//PB7
-    GPIOB->CRL &=~(1<<31);//PB7
     GPIOB->CRH |=(1<<0);//PB8
     GPIOB->CRH |=(1<<1);//PB8
     GPIOB->CRH &=~(1<<2);//PB8
     GPIOB->CRH &=~(1<<3);//PB8  
+    GPIOB->CRH |=(1<<4);//PB9
+    GPIOB->CRH |=(1<<5);//PB9
+    GPIOB->CRH &=~(1<<6);//PB9
+    GPIOB->CRH &=~(1<<7);//PB9
     GPIOB->CRH |=(1<<8);//PB10
     GPIOB->CRH |=(1<<9);//PB10
     GPIOB->CRH &=~(1<<10);//PB10
-    GPIOB->CRH &=~(1<<11);//PB10  
+    GPIOB->CRH &=~(1<<11);//PB10
+    GPIOB->CRH |=(1<<12);//PB11
+    GPIOB->CRH |=(1<<13);//PB11
+    GPIOB->CRH &=~(1<<14);//PB11
+    GPIOB->CRH &=~(1<<15);//PB11
     GPIOB->CRH |=(1<<16);//PB12
     GPIOB->CRH |=(1<<17);//PB12
     GPIOB->CRH &=~(1<<18);//PB12
@@ -93,6 +99,9 @@ void LCD_init(void)
     GPIOB->CRH |=(1<<29);//PB15
     GPIOB->CRH &=~(1<<30);//PB15
     GPIOB->CRH &=~(1<<31);//PB15
+
+    SendBitToPortAndPin(RW_Port, RW_Pin, 0);  // always write
+
 }
 
 
@@ -124,12 +133,13 @@ void SendCharachterToTheLCDDataPins(char character)
 void ToggleEnablePin()
 {
     SendBitToPortAndPin(E_Port, E_Pin, 1);
-    for (volatile int i = 0; i < 1000; i++)
-        ; // Small delay
-    SendBitToPortAndPin(RS_Port, RS_Pin, 0);
-    for (volatile int i = 0; i < 1000; i++)
-        ; // Small delay
+    for (volatile int i = 0; i < 1000; i++);
+    SendBitToPortAndPin(E_Port, E_Pin, 0);   // ✔ Correct
+    for (volatile int i = 0; i < 1000; i++);
 }
+
+
+
 void SendCommandToLCD(uint8_t command)
 {
     SendBitToPortAndPin(RS_Port, RS_Pin, 0); // RS = 0 for command
