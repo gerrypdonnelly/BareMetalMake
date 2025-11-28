@@ -1,6 +1,11 @@
 CC = arm-none-eabi-gcc
 CFLAGS = -c -mcpu=cortex-m3 -mthumb -std=gnu11
-LFLAGS = -nostdlib -T startup_linker/stm32F103_linker_script.ld -Wl,-Map=bin/LCD_8bit.map
+LFLAGS = -T startup_linker/stm32F103_linker_script.ld \
+         -Wl,-Map=bin/LCD_8bit.map \
+         --specs=nano.specs \
+         -Wl,-u,_printf_float \
+         -lc -lm -lnosys -lgcc
+
 OFILES = kernel.o stm32f103_startup.o LCD.o
 
 all : LCD_8bit.elf

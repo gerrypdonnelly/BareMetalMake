@@ -1,34 +1,40 @@
-
 #include "stm32f103xb.h"
 #include "LCD.h"
+#include <stdio.h>
+
+void delay(volatile int count)
+{
+	while (count--)
+		; // crude delay
+}
 
 int main(void)
 {
-	/* Initialize GPIO Ports for LCD */
+	/* Initialize GPIO Ports and LCD */
 	LCD_init();
+	InitializeLCD();
 
-	/*
-		InitializeLCD();
-		for (int i = 0; i <= 10000; i++)
-			; // Simple delay
-		SendCharachterToTheLCDDataPins('A');
+	/* Line 1 */
+	LCDGotoXY(1, 1);
+	LCDSendAString("Hello, World!");
 
-		InitializeLCD();
-		for (int i = 0; i <= 10000; i++)
-			; // Simple delay
-		SendCharachterToTheLCDDataPins('A');
-	*/
+	/* Line 2 */
+	LCDGotoXY(2, 1);
+	LCDSendAString("STM32 LCD Test");
+
+	/* Line 3 */
+	LCDGotoXY(3, 1);
+	LCDSendAString("Line3 OK");
+
+	/* Line 4 */
+	LCDGotoXY(4, 1);
+	char StringNumber[10];
+	int AnInt = 200;
+	sprintf(StringNumber, "Num:%d", AnInt);
+	LCDSendAString(StringNumber);
+
 	while (1)
 	{
-		for (int i = 0; i <= 100000; i++)
-			;
-		GPIOC->ODR |= 0xFFFF; // Set all pins high initially
-		GPIOB->ODR |= 0xFFFF; // Set all pins high initially
-		for (int i = 0; i <= 100000; i++)
-			;					 // Simple delay
-		GPIOC->ODR &= ~(0xFFFF); // Set all pins high initially
-		GPIOB->ODR &= ~(0xFFFF); // Set all pins high initially
-
-		// Main loop
-	};
+		// keep displaying
+	}
 }

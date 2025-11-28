@@ -55,11 +55,23 @@ SECTIONS
 	
 	/*third section of output file*/
 	.bss :
-	{
-		. = ALIGN(4);
-		_sbss = .;			/*create a global symbol to hold start of bss section*/
-		*(.bss)				/*merge all .text sections of input files*/
-		. = ALIGN(4);
-		_ebss = .;			/*create a global symbol to hold end of bss section*/
-	}	> SRAM
+{
+    . = ALIGN(4);
+    _sbss = .;
+    *(.bss)
+    . = ALIGN(4);
+    _ebss = .;
+
+    /* required by newlib / libnosys */
+    _end = .;
+    PROVIDE(end = .);
+
+    /* required by libraries expecting __bss_start__ and __bss_end__ */
+    __bss_start__ = _sbss;
+    __bss_end__   = _ebss;
+    PROVIDE(__bss_start__ = _sbss);
+    PROVIDE(__bss_end__   = _ebss);
+
+} > SRAM
+
 }

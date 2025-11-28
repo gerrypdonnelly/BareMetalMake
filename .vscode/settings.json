@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "adc.h": "c",
-        "lcd.h": "c"
+        "lcd.h": "c",
+        "stm32f103xb.h": "c"
     }
 }
