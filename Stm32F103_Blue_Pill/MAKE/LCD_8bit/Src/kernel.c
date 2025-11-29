@@ -1,6 +1,10 @@
 #include "stm32f103xb.h"
 #include "LCD.h"
-#include <stdio.h>
+#include "LCD_test.h"
+//#include <stdio.h>
+
+#define LCDline = 1;
+#define LCDposition = 1;
 
 void delay(volatile int count)
 {
@@ -28,13 +32,17 @@ int main(void)
 
 	/* Line 4 */
 	LCDGotoXY(4, 1);
-	char StringNumber[10];
-	int AnInt = 200;
-	sprintf(StringNumber, "Num:%d", AnInt);
-	LCDSendAString(StringNumber);
+	LCDSendAString("Line4 OK");
+//	char StringNumber[10];
+//	int AnInt = 200;
+//	sprintf(StringNumber, "Num:%d", AnInt);
+//	LCDSendAString(StringNumber);
+
 
 	while (1)
 	{
-		// keep displaying
+
+	LCDTest();
+
 	}
 }

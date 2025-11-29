@@ -38,6 +38,15 @@ License: MIT License
 // INitialize GPIO Ports for LCD
 void LCD_init(void)
 {
+    // Enable AFIO clock
+RCC->APB2ENR |= (1 << 0);
+
+// Disable JTAG, but keep SWD
+AFIO->MAPR |= (0b010 << 24);  // or AFIO_MAPR_SWJ_CFG_JTAGDISABLE
+
+    // Disable JTAG and keep SWD (recommended)
+    AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
+
     // USING RCC TO ENABLE CLOCK FOR PORT B AND PORT C
     RCC->APB2ENR |= (1U << 4); // Enable clock to port c
     RCC->APB2ENR |= (1U << 3); // Enable clock to port B
@@ -90,17 +99,6 @@ void LCD_init(void)
     GPIOB->CRH |= (1 << 29);  // PB15
     GPIOB->CRH &= ~(1 << 30); // PB15
     GPIOB->CRH &= ~(1 << 31); // PB15
-
-    /* // Alternative way of setting the pins as output Curious!!!!
-    GPIOC->CRH &= ~0x0FF00000; // Clear PC15 bits
-    GPIOC->CRH |= 0x03300000;  // PC15 as output max speed 50Mhz
-    GPIOC->CRL &= ~0x0FF00000; // Clear PB5,PB6 bits
-    GPIOB->CRL |= 0x03300000;  // PB5,PB6 as output max speed 50Mhz
-    GPIOB->CRH &= ~0xFFFFFFFF; // Clear PB8,PB9,PB10,PB11,PB12,PB13,PB14,PB15 bits
-    GPIOB->CRH |= 0x33333333;  // PB8,PB9,PB10,PB11,PB12,PB13,PB14,PB15 as output max speed 50Mhz
-*/
-
-    //  SendBitToPortAndPin(RW_Port, RW_Pin, 0);  // always write
 }
 
 void SendBitToPortAndPin(GPIO_TypeDef *port, int pinNumber, uint8_t bitState)
@@ -133,7 +131,6 @@ void ToggleEnablePin()
     SendBitToPortAndPin(Enable_Port, Enable_Pin, 1);
     for (volatile int i = 0; i < 1000; i++)
         ;
-
     SendBitToPortAndPin(Enable_Port, Enable_Pin, 0);
     for (volatile int i = 0; i < 1000; i++)
         ;
@@ -152,6 +149,8 @@ void SendCommandToLCD(uint8_t command)
         ; // Small delay
     ToggleEnablePin();
 }
+
+
 void SendDataToLCD(uint8_t data)
 {
     SendBitToPortAndPin(RS_Port, RS_Pin, 1); // RS = 1 for data
@@ -159,7 +158,7 @@ void SendDataToLCD(uint8_t data)
     SendCharachterToTheLCDDataPins(data);
     ToggleEnablePin();
     for (volatile int i = 0; i < 2000; i++)
-        ; //
+        ; 
 }
 
 void LCDSendAString(const char *StringOfCharachters)
@@ -200,6 +199,8 @@ void InitializeLCD(void)
     SendCommandToLCD(0x06); // Entry mode
 }
 
+
+// Commands to set cursor position and determine address based on line and column
 void LCDGotoXY(uint8_t line, uint8_t column)
 {
     uint8_t address;
@@ -223,3 +224,20 @@ void LCDGotoXY(uint8_t line, uint8_t column)
     }
     SendCommandToLCD(0x80 | (address + column - 1));
 }
+
+
+//Function to create a black bar on the lcd screen (used for loading bars etc)
+void LCDCreateBlackBar(void)
+{
+    // Set all 8 pixels in a custom character to be filled (black)
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        SendCommandToLCD(0x40 + (i * 8)); // Set CGRAM address
+        for (uint8_t j = 0; j < 8; j++)
+        {
+            SendDataToLCD(0x1F); // 5 bits set for black pixel
+        }
+    }
+    SendCommandToLCD(0x80); // Return to DDRAM
+}
+

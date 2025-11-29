@@ -10,6 +10,8 @@ void SendBitToPortAndPin(GPIO_TypeDef *port, int pinNumber, uint8_t bitState);
 void LCDSendAString(const char *StringOfCharachters);
 void LCDGotoXY(uint8_t line, uint8_t column);
 
+
+
 // void SendBitToPortAndPin(GPIO_TypeDef *port, int pinNumber, uint8_t bitState);
 
 void SendCharachterToTheLCDDataPins(char character);
