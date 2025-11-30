@@ -9,11 +9,6 @@ License: MIT License
 
 #include "stm32f103xb.h"
 #include "LCD.h"
-#define FourBitMode
-//#define EightBitMode
-#define TwoLineLCD
-//#define FourLineLCD
-
 
 // Pin and port configurations for LCD data pins and control pins
 #define LCDD0Pin 10
@@ -40,15 +35,22 @@ License: MIT License
 #define Enable_Pin 15
 #define Enable_Port GPIOC
 
-
 // INitialize GPIO Ports for LCD
 void LCD_init(void)
 {
     // Enable AFIO clock
-    RCC->APB2ENR |= (1 << 0);
+RCC->APB2ENR |= (1 << 0);
+
+// Disable JTAG, but keep SWD
+AFIO->MAPR |= (0b010 << 24);  // or AFIO_MAPR_SWJ_CFG_JTAGDISABLE
+
+    // Disable JTAG and keep SWD (recommended)
+    AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
+
     // USING RCC TO ENABLE CLOCK FOR PORT B AND PORT C
     RCC->APB2ENR |= (1U << 4); // Enable clock to port c
     RCC->APB2ENR |= (1U << 3); // Enable clock to port B
+
     // USING GPIO TO SET THE PINS AS OUTPUT
     // Set Mode and CNF of pin PC15 to output max speed 50Mhz
     GPIOC->CRH |= (1 << 28);  // PC15
@@ -99,7 +101,6 @@ void LCD_init(void)
     GPIOB->CRH &= ~(1 << 31); // PB15
 }
 
-
 void SendBitToPortAndPin(GPIO_TypeDef *port, int pinNumber, uint8_t bitState)
 // hover over GPIOB with your mouse you will see it is a TypeDef struct pointer so we use GPIO_TypeDef * and port represents the port
 {
@@ -113,7 +114,6 @@ void SendBitToPortAndPin(GPIO_TypeDef *port, int pinNumber, uint8_t bitState)
     }
 }
 
-#ifdef EightBitMode
 void SendCharachterToTheLCDDataPins(char character)
 {
     SendBitToPortAndPin(LCDD0Port, LCDD0Pin, (character >> 0) & 1);
@@ -125,18 +125,6 @@ void SendCharachterToTheLCDDataPins(char character)
     SendBitToPortAndPin(LCDD6Port, LCDD6Pin, (character >> 6) & 1);
     SendBitToPortAndPin(LCDD7Port, LCDD7Pin, (character >> 7) & 1);
 }
-#endif
-
-#ifdef FourBitMode
-void SendCharachterToTheLCDDataPins_4BitMode(char character)
-{
-    SendBitToPortAndPin(LCDD4Port, LCDD4Pin, (character >> 4) & 1);
-    SendBitToPortAndPin(LCDD5Port, LCDD5Pin, (character >> 5) & 1);
-    SendBitToPortAndPin(LCDD6Port, LCDD6Pin, (character >> 6) & 1);
-    SendBitToPortAndPin(LCDD7Port, LCDD7Pin, (character >> 7) & 1);
-}   
-#endif
-
 
 void ToggleEnablePin()
 {
@@ -148,7 +136,6 @@ void ToggleEnablePin()
         ;
 }
 
-#ifdef EightBitMode
 void SendCommandToLCD(uint8_t command)
 {
     SendBitToPortAndPin(RS_Port, RS_Pin, 0); // RS = 0 for command
@@ -162,31 +149,8 @@ void SendCommandToLCD(uint8_t command)
         ; // Small delay
     ToggleEnablePin();
 }
-#endif
 
-#ifdef FourBitMode
-void SendCommandToLCD_4BitMode(uint8_t command)
-{
-    SendBitToPortAndPin(RS_Port, RS_Pin, 0); // RS = 0 for command
-    for (volatile int i = 0; i < 2000; i++)
-        ;                                    // Small delay
-    SendBitToPortAndPin(RW_Port, RW_Pin, 0); // RW = 0 for write
-    for (volatile int i = 0; i < 2000; i++)
-        ; // Small delay
-    SendCharachterToTheLCDDataPins_4BitMode(command); // Send higher nibble
-    for (volatile int i = 0; i < 2000; i++)
-        ; // Small delay
-    ToggleEnablePin();
-    for (volatile int i = 0; i < 2000; i++)
-        ; // Small delay
-    SendCharachterToTheLCDDataPins_4BitMode(command << 4); // Send lower nibble
-    for (volatile int i = 0; i < 2000; i++)
-        ; // Small delay
-    ToggleEnablePin();
-}
-#endif
 
-#ifdef EightBitMode
 void SendDataToLCD(uint8_t data)
 {
     SendBitToPortAndPin(RS_Port, RS_Pin, 1); // RS = 1 for data
@@ -196,25 +160,7 @@ void SendDataToLCD(uint8_t data)
     for (volatile int i = 0; i < 2000; i++)
         ; 
 }
-#endif
 
-#ifdef FourBitMode
-void SendDataToLCD_4BitMode(uint8_t data)
-{
-    SendBitToPortAndPin(RS_Port, RS_Pin, 1); // RS = 1 for data
-    SendBitToPortAndPin(RW_Port, RW_Pin, 0); // RW = 0 for write
-    SendCharachterToTheLCDDataPins_4BitMode(data); // Send higher nibble
-    ToggleEnablePin();
-    for (volatile int i = 0; i < 2000; i++)
-        ; // Small delay
-    SendCharachterToTheLCDDataPins_4BitMode(data << 4); // Send lower nibble
-    ToggleEnablePin();
-    for (volatile int i = 0; i < 2000; i++)
-        ; 
-}
-#endif
-
-#ifdef EightBitMode
 void LCDSendAString(const char *StringOfCharachters)
 {
     while (*StringOfCharachters != '\0')
@@ -223,76 +169,37 @@ void LCDSendAString(const char *StringOfCharachters)
         StringOfCharachters++;
     }
 }
-#endif
 
-#ifdef FourBitMode
-void LCDSendAString_4BitMode(const char *StringOfCharachters)
-{
-    while (*StringOfCharachters != '\0')
-    {
-        SendDataToLCD_4BitMode((uint8_t)(*StringOfCharachters));
-        StringOfCharachters++;
-    }
-}
-#endif
-
-#ifdef EightBitMode
 void InitializeLCD(void)
 {
     // Wait >40ms after power rises above 2.7V
     for (volatile int i = 0; i < 80000; i++)
         ;
+
     // 8-bit init sequence required by HD44780
     SendCommandToLCD(0x30);
     for (volatile int i = 0; i < 80000; i++)
         ;
+
     SendCommandToLCD(0x30);
     for (volatile int i = 0; i < 20000; i++)
         ;
+
     SendCommandToLCD(0x30);
     for (volatile int i = 0; i < 20000; i++)
         ;
+
     // Now the LCD is ready for real config
     SendCommandToLCD(0x38); // 8-bit, 2-line, 5x8 font
     SendCommandToLCD(0x0C); // Display ON, no cursor
     SendCommandToLCD(0x01); // Clear display
     for (volatile int i = 0; i < 500000; i++)
         ;
+
     SendCommandToLCD(0x06); // Entry mode
 }
-#endif
 
-#ifdef FourBitMode
-void InitializeLCD_4BitMode(void)
-{
-    // Wait >40ms after power rises above 2.7V
-    for (volatile int i = 0; i < 80000; i++)
-        ;
-    // 4-bit init sequence required by HD44780
-    SendCommandToLCD_4BitMode(0x30);
-    for (volatile int i = 0; i < 80000; i++)
-        ;
-    SendCommandToLCD_4BitMode(0x30);
-    for (volatile int i = 0; i < 20000; i++)
-        ;
-    SendCommandToLCD_4BitMode(0x30);
-    for (volatile int i = 0; i < 20000; i++)
-        ;
-    // Now set to 4-bit mode
-    SendCommandToLCD_4BitMode(0x20); // Set to 4-bit mode
-    for (volatile int i = 0; i < 20000; i++)
-        ;
-    // Now the LCD is ready for real config
-    SendCommandToLCD_4BitMode(0x28); // 4-bit, 2-line, 5x8 font
-    SendCommandToLCD_4BitMode(0x0C); // Display ON, no cursor
-    SendCommandToLCD_4BitMode(0x01); // Clear display
-    for (volatile int i = 0; i < 500000; i++)
-        ;
-    SendCommandToLCD_4BitMode(0x06); // Entry mode
-}
-#endif
 
-#ifdef FourLineLCD
 // Commands to set cursor position and determine address based on line and column
 void LCDGotoXY(uint8_t line, uint8_t column)
 {
@@ -317,28 +224,7 @@ void LCDGotoXY(uint8_t line, uint8_t column)
     }
     SendCommandToLCD(0x80 | (address + column - 1));
 }
-#endif
 
-#ifdef TwoLineLCD
-// Commands to set cursor position and determine address based on line and column
-void LCDGotoXY(uint8_t line, uint8_t column)
-{
-    uint8_t address;
-    switch (line)
-    {
-    case 1:
-        address = 0x00;
-        break;
-    case 2:
-        address = 0x40;
-        break;
-    default:
-        address = 0x00;
-        break;
-    }
-    SendCommandToLCD(0x80 | (address + column - 1));
-}
-#endif
 
 //Function to create a black bar on the lcd screen (used for loading bars etc)
 void LCDCreateBlackBar(void)

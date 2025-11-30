@@ -1,6 +1,7 @@
 #include "stm32f103xb.h"
 #include "LCD.h"
 #include "LCD_test.h"
+//#include <stdio.h>
 
 #define LCDline = 1;
 #define LCDposition = 1;
@@ -15,30 +16,33 @@ int main(void)
 {
 	/* Initialize GPIO Ports and LCD */
 	LCD_init();
-	InitializeLCD_4BitMode();
+	InitializeLCD();
 
 	/* Line 1 */
 	LCDGotoXY(1, 1);
-	LCDSendAString_4BitMode("Hello, World!");
+	LCDSendAString("Hello, World!");
 
 	/* Line 2 */
 	LCDGotoXY(2, 1);
-	LCDSendAString_4BitMode("STM32 LCD Test");
+	LCDSendAString("STM32 LCD Test");
 
 	/* Line 3 */
 	LCDGotoXY(3, 1);
-	LCDSendAString_4BitMode("Line3 OK");
+	LCDSendAString("Line3 OK");
 
 	/* Line 4 */
 	LCDGotoXY(4, 1);
-	LCDSendAString_4BitMode("Line4 OK");
-
+	LCDSendAString("Line4 OK");
+//	char StringNumber[10];
+//	int AnInt = 200;
+//	sprintf(StringNumber, "Num:%d", AnInt);
+//	LCDSendAString(StringNumber);
 
 
 	while (1)
 	{
 
-//	LCDTest_4BitMode();
+	//LCDTest();
 
 	}
 }
