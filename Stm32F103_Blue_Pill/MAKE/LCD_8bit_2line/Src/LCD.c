@@ -118,6 +118,7 @@ void SendCharachterToTheLCDDataPins(char character)
     SendBitToPortAndPin(LCDD7Port, LCDD7Pin, (character >> 7) & 1);
 }
 
+/*
 void SendCharachterToTheLCDDataPins(char character)
 {
     SendBitToPortAndPin(LCDD4Port, LCDD4Pin, (character >> 4) & 1);
@@ -125,6 +126,7 @@ void SendCharachterToTheLCDDataPins(char character)
     SendBitToPortAndPin(LCDD6Port, LCDD6Pin, (character >> 6) & 1);
     SendBitToPortAndPin(LCDD7Port, LCDD7Pin, (character >> 7) & 1);
 }
+*/
 
 void ToggleEnablePin()
 {
@@ -150,26 +152,6 @@ void SendCommandToLCD(uint8_t command)
     ToggleEnablePin();
 }
 
-void SendCommandToLCD(uint8_t command)
-{
-    SendBitToPortAndPin(RS_Port, RS_Pin, 0); // RS = 0 for command
-    for (volatile int i = 0; i < 2000; i++)
-        ;                                    // Small delay
-    SendBitToPortAndPin(RW_Port, RW_Pin, 0); // RW = 0 for write
-    for (volatile int i = 0; i < 2000; i++)
-        ;                                    // Small delay
-    SendCharachterToTheLCDDataPins(command); // Send higher nibble
-    for (volatile int i = 0; i < 2000; i++)
-        ; // Small delay
-    ToggleEnablePin();
-    for (volatile int i = 0; i < 2000; i++)
-        ;                                         // Small delay
-    SendCharachterToTheLCDDataPins(command << 4); // Send lower nibble
-    for (volatile int i = 0; i < 2000; i++)
-        ; // Small delay
-    ToggleEnablePin();
-}
-
 void SendDataToLCD(uint8_t data)
 {
     SendBitToPortAndPin(RS_Port, RS_Pin, 1); // RS = 1 for data
@@ -180,7 +162,7 @@ void SendDataToLCD(uint8_t data)
         ;
 }
 
-void SendDataToLCD(uint8_t data)
+/*void SendDataToLCD(uint8_t data)
 {
     SendBitToPortAndPin(RS_Port, RS_Pin, 1); // RS = 1 for data
     SendBitToPortAndPin(RW_Port, RW_Pin, 0); // RW = 0 for write
@@ -193,15 +175,7 @@ void SendDataToLCD(uint8_t data)
     for (volatile int i = 0; i < 2000; i++)
         ;
 }
-
-void LCDSendAString(const char *StringOfCharachters)
-{
-    while (*StringOfCharachters != '\0')
-    {
-        SendDataToLCD((uint8_t)(*StringOfCharachters));
-        StringOfCharachters++;
-    }
-}
+*/
 
 void LCDSendAString(const char *StringOfCharachters)
 {
@@ -236,6 +210,7 @@ void InitializeLCD(void)
     SendCommandToLCD(0x06); // Entry mode
 }
 
+/*
 void InitializeLCD(void)
 {
     // Wait >40ms after power rises above 2.7V
@@ -263,7 +238,7 @@ void InitializeLCD(void)
         ;
     SendCommandToLCD(0x06); // Entry mode
 }
-
+*/
 // Commands to set cursor position and determine address based on line and column
 void LCDGotoXY(uint8_t line, uint8_t column)
 {
@@ -281,25 +256,6 @@ void LCDGotoXY(uint8_t line, uint8_t column)
         break;
     case 4:
         address = 0x54;
-        break;
-    default:
-        address = 0x00;
-        break;
-    }
-    SendCommandToLCD(0x80 | (address + column - 1));
-}
-
-// Commands to set cursor position and determine address based on line and column
-void LCDGotoXY(uint8_t line, uint8_t column)
-{
-    uint8_t address;
-    switch (line)
-    {
-    case 1:
-        address = 0x00;
-        break;
-    case 2:
-        address = 0x40;
         break;
     default:
         address = 0x00;
