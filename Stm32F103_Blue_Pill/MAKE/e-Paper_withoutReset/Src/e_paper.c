@@ -1,5 +1,5 @@
-// epd_minimal.c
-// Minimal 1.54" 200x200 e-paper driver for STM32F103 (no RST pin)
+// epd_minimal.c IL3829 
+// Minimal 1.54" 200x200 e-paper IL3829 driver for STM32F103 (no RST pin)
 
 #include "stm32f103xb.h"
 #include <stdint.h>
