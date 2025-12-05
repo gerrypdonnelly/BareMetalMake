@@ -315,7 +315,7 @@ void LCDGotoXY(uint8_t line, uint8_t column)
         address = 0x00;
         break;
     }
-    SendCommandToLCD(0x80 | (address + column - 1));
+    SendCommandToLCD_4BitMode(0x80 | (address + column - 1));
 }
 #endif
 
@@ -336,7 +336,7 @@ void LCDGotoXY(uint8_t line, uint8_t column)
         address = 0x00;
         break;
     }
-    SendCommandToLCD(0x80 | (address + column - 1));
+    SendCommandToLCD_4BitMode(0x80 | (address + column - 1));
 }
 #endif
 
@@ -346,12 +346,12 @@ void LCDCreateBlackBar(void)
     // Set all 8 pixels in a custom character to be filled (black)
     for (uint8_t i = 0; i < 8; i++)
     {
-        SendCommandToLCD(0x40 + (i * 8)); // Set CGRAM address
+        SendCommandToLCD_4BitMode(0x40 + (i * 8)); // Set CGRAM address
         for (uint8_t j = 0; j < 8; j++)
         {
-            SendDataToLCD(0x1F); // 5 bits set for black pixel
+            SendDataToLCD_4BitMode(0x1F); // 5 bits set for black pixel
         }
     }
-    SendCommandToLCD(0x80); // Return to DDRAM
+    SendCommandToLCD_4BitMode(0x80); // Return to DDRAM
 }
 
