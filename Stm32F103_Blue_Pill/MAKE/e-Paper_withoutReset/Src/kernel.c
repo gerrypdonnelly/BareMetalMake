@@ -1,6 +1,6 @@
 #include "stm32f103xb.h"
 #include <stdint.h>
-#include "LCD.h"
+#include "e_paper.h"
 #include "trace.h"
 
 /* Simple crude delay (blocking) */
@@ -14,20 +14,14 @@ int main(void)
 {
 	/*Initialize UART1 for trace*/
 	trace_init();
-	printg("Starting LCD Example...\n");
+	printg("Starting E Paper Example...\n");
 
-	/* Initialize hardware & LCD */
-	LCD_init();
-	InitializeLCD();
+	/* Initialize E-Paper Display */
 
-	/* Line 1 */
-	LCDGotoXY(1, 1);
-	LCDSendAString("Hello, World!");
-
-	/* Line 2 */
-	LCDGotoXY(2, 1);
-	LCDSendAString("STM32 LCD Test");
-
+	epd_init();
+	epd_clear(); // fills screen white
+	delay(1000);
+	epd_fill_black(); // fills screen black
 	while (1)
 	{
 	}
