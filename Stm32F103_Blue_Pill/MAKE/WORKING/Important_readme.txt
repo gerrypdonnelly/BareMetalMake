@@ -1,0 +1,1 @@
+The trace program is working and this can be seen from LCD 2 line programs

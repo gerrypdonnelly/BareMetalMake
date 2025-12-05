@@ -1,0 +1,31 @@
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "STM32F103",
+            "compilerPath": "C:/tools_embedded/3rdparty/gcc_13.2.1/bin/arm-none-eabi-gcc.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/tools_embedded/3rdparty/gcc_13.2.1/arm-none-eabi/include",
+                "C:/tools_embedded/3rdparty/gcc_13.2.1/arm-none-eabi/include/c++/13.2.1",
+                "C:/tools_embedded/3rdparty/gcc_13.2.1/arm-none-eabi/include/c++/13.2.1/arm-none-eabi"
+            ],
+            "defines": [
+                "STM32F103xB",
+                "__FPU_PRESENT=0",
+                "__STM32F1__"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "C:/tools_embedded/3rdparty/gcc_13.2.1/arm-none-eabi/include",
+                    "C:/tools_embedded/3rdparty/gcc_13.2.1/arm-none-eabi/include/c++/13.2.1"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ]
+}
