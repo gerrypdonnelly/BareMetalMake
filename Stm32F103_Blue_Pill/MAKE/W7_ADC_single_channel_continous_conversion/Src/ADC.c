@@ -1,6 +1,6 @@
 /*
  * ADC.c
- *
+ *  Analog is being read in at PA1 (ADC channel 1)
  *  Created on: Nov 10, 2024
  *      Author: gerdon
  */

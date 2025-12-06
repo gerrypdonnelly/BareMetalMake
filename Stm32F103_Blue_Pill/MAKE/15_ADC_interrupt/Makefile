@@ -1,6 +1,6 @@
 CC = arm-none-eabi-gcc
 CFLAGS = -c -mcpu=cortex-m3 -mthumb -std=gnu11
-LFLAGS = -T startup_linker/stm32F103_linker_script.ld -nostartfiles -Wl,-Map=$(BIN_DIR)/Rx_interrupt.map
+LFLAGS = -T startup_linker/stm32F103_linker_script.ld -nostartfiles -Wl,-Map=$(BIN_DIR)/ADC_interrupt.map
 
 BUILD_DIR = build
 BIN_DIR = bin

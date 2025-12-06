@@ -15,11 +15,11 @@ Injected continuous ----  Triggered by external or software has priority over ot
 // #include <stdio.h>
 #include "stm32f103xb.h"
 #include "ADC.h"
-#include "USART.h"
+#include "trace.h"
 
 int __io_putchar(int ch)
 {
-	UART_write(ch);
+	usart1_send_char(ch);
 	return ch;
 }
 
@@ -27,10 +27,11 @@ uint16_t sensor_value;
 
 int main(void)
 {
-	USART1_Init();
+	trace_init();
 	pa1_adc_init();
 	Start_conversion();
-
+	printg("ADC Single Channel Continuous Conversion Example\r\n");
+	
 	while (1)
 	{
 
