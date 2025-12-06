@@ -7,6 +7,7 @@
 
 #include "stm32f103xb.h"
 #include "ADC.h"
+#include "trace.h"
 
 #define GPIOAEN (1U << 2)
 #define ADC1EN (1U << 9)
@@ -36,9 +37,11 @@ void pa1_adc_init(void)
 	// Conversion sequence start
 	ADC1->SQR3 = ADC_CH1;		   // Channel sequence order in which samples are taken
 	ADC1->SMPR2 |= ADC_SMPR2_SMP1; // Set sampling time for channel 1 to 239.5 cycles (for accuracy)
+	
 	/*configure ADC peripheral*/
 	// Enable the ADC module
 	ADC1->CR2 |= CR2_ADON; // ADC_CR2 bit 0 ADON enables and disables ADC
+	
 	// Calibration
 	ADC1->CR2 |= ADC_CR2_CAL; // Start calibration
 	while (ADC1->CR2 & ADC_CR2_CAL)
@@ -54,7 +57,6 @@ void Start_conversion(void)
 
 uint16_t adc_read(void)
 {
-
 	// wait for conversion to finish
 	// go to status register and watch conversion complete flag ADC_SR bit 1 EOC
 	while (!(ADC1->SR & SR_EOC))

@@ -21,6 +21,7 @@ int __io_putchar(int ch)
 {
 	usart1_send_char(ch);
 	return ch;
+
 }
 
 uint16_t sensor_value;
@@ -31,11 +32,11 @@ int main(void)
 	pa1_adc_init();
 	Start_conversion();
 	printg("ADC Single Channel Continuous Conversion Example\r\n");
-	
+
 	while (1)
 	{
 
 		sensor_value = adc_read();
-		// printf("Sensor value : %d \n", (int)sensor_value);//as sensor value is uint32_t it will throw an error so type cast sensor value to int.
+		printg("Value read: %d\r\n", sensor_value);
 	}
 }
