@@ -1,6 +1,8 @@
 /*
  * ADC.c
  *  Analog is being read in at PA1 (ADC channel 1)
+ * ADC is configured for single channel continuous conversion mode
+ * ADC value is read and printed to terminal via USART1
  *  Created on: Nov 10, 2024
  *      Author: gerdon
  */
