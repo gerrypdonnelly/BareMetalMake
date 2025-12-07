@@ -4,6 +4,11 @@ Key PA0
 LED PB2 APB2
 Setting USART PA9 Tx
 Setting USART PA10 Rx
+Every second toggle the LED using General purpose timer 2
+Using polling method to check for the update interrupt flag
+Every second print a message to the terminal using USART
+System clock is 8MHz from internal RC oscillator
+Using Systick timer to create delay functions	
 
 Systick timer is a 24 bit register that counts don from FFFF to 0000
 SYST_CVR Systick current value register // contains the current value
@@ -27,7 +32,7 @@ with systick being coretex-m peripheral references can be found in https://devel
 #include <stdio.h>
 #include "stm32f103xb.h"
 #include "ADC.h"
-#include "usart.h"
+#include "trace.h"
 #include "SYSTICK.h"
 #include "Timer.h"
 
@@ -36,7 +41,7 @@ with systick being coretex-m peripheral references can be found in https://devel
 
 int __io_putchar(int ch)
 {
-	UART_write(ch);
+	printg("%c\r\n", ch);
 	return ch;
 }
 
@@ -45,7 +50,7 @@ uint16_t sensor_value;
 
 int main(void)
 {
-	USART1_Init();
+	trace_init();
 	Tim2_1hz_init();
 
 	//Configuration for LED
@@ -63,7 +68,7 @@ int main(void)
 		while(!(TIM2->SR & SR_UIF)){}			//Wait for UIF
 
 		TIM2->SR &=~SR_UIF;					//Clear UIF flag
-		printf("A second has passed \n");
+		printg("A second has passed \n");
 		GPIOB->ODR ^= LED;
 
 
