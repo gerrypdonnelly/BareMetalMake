@@ -7,9 +7,6 @@
 #define USARTDIV (SYSTEM_CLOCK / BAUD_RATE)
 
 
-
-
-
 void uart_Rx_interrupt_init(void)
 {
     // 1. Enable GPIOA and USART1 clocks
@@ -40,8 +37,6 @@ void uart_Rx_interrupt_init(void)
     NVIC_EnableIRQ(USART1_IRQn);
     USART1->CR1 |= USART_CR1_UE;						// Enable USART
 }
-
-
 
 
 void uart_RxTx_init(void)

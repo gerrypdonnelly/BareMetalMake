@@ -5,7 +5,7 @@ LFLAGS = -T startup_linker/stm32F103_linker_script.ld -nostartfiles -Wl,-Map=$(B
 BUILD_DIR = build
 BIN_DIR = bin
 
-OFILES = $(BUILD_DIR)/main.o $(BUILD_DIR)/stm32F103_startup.o $(BUILD_DIR)/UART.o 
+OFILES = $(BUILD_DIR)/kernel.o $(BUILD_DIR)/stm32F103_startup.o $(BUILD_DIR)/UART.o 
 
 
 all : $(BIN_DIR)/Rx_interrupt.elf
@@ -17,7 +17,7 @@ $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
 
-$(BUILD_DIR)/main.o : Src/main.c | $(BUILD_DIR)
+$(BUILD_DIR)/kernel.o : Src/kernel.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(BUILD_DIR)/stm32F103_startup.o : startup_linker/stm32F103_startup.c | $(BUILD_DIR)

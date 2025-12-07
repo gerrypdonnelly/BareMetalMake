@@ -1,7 +1,5 @@
+#include "stm32f103xb.h"    
 #include "lcd_i2c.h"
-#include "stm32f10x_i2c.h"
-#include "stm32f10x_gpio.h"
-#include "stm32f10x_rcc.h"
 #include <stdint.h>
 
 #define LCD_BACKLIGHT 0x08
