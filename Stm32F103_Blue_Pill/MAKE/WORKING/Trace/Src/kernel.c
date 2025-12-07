@@ -23,8 +23,7 @@ volatile uint16_t rec_index = 0;
 
 int main(void)
 {
-    // GPIO_Init();
-    // USART1_Init();
+
     trace_init();
     printg("STM32F103 Blue Pill Trace Example\r\n");
 
