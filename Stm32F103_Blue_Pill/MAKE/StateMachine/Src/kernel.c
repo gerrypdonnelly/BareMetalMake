@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include "trace.h"
+#include "ADC.h"
 
 /* ----------------- Hardware Simulation ----------------- */
 bool buttonA(void);
@@ -13,7 +15,8 @@ void clearDisplay(void);
 void print(const char *msg);
 
 /* ----------------- State Machine ----------------- */
-typedef enum {
+typedef enum
+{
     STATE_PRINT_MENU,
     STATE_WAIT_BUTTON,
     STATE_CLEAR_AND_HELLO,
@@ -34,16 +37,15 @@ State (*state_table[])(void) = {
     state_wait_button,
     state_clear_and_hello,
     state_start_timer,
-    state_wait_timer
-};
+    state_wait_timer};
 
 /* ----------------- STATE IMPLEMENTATIONS ----------------- */
 
 /* State 1: Print watering system */
 State state_print_menu(void)
 {
-    print("Watering system");
-    return STATE_WAIT_BUTTON;   // flowchart arrow down
+    printg("Watering system\r\n");
+    return STATE_WAIT_BUTTON; // flowchart arrow down
 }
 
 /* Decision: Button A or B or C pressed? */
@@ -52,21 +54,21 @@ State state_wait_button(void)
     if (buttonA() || buttonB() || buttonC())
         return STATE_CLEAR_AND_HELLO;
 
-    return STATE_PRINT_MENU;  // loop back according to the flowchart
+    return STATE_PRINT_MENU; // loop back according to the flowchart
 }
 
 /* Clear display & print hello */
 State state_clear_and_hello(void)
 {
     clearDisplay();
-    print("Hello!");
+    printg("Hello!\r\n");
     return STATE_START_TIMER;
 }
 
 /* Start wait timer */
 State state_start_timer(void)
 {
-    startTimer(2000);   // example 2 seconds
+    startTimer(2000); // example 2 seconds
     return STATE_WAIT_TIMER;
 }
 
@@ -83,6 +85,9 @@ State state_wait_timer(void)
 
 int main(void)
 {
+    pa1_adc_init();
+    Start_conversion();
+
     State current = STATE_PRINT_MENU;
 
     while (1)
