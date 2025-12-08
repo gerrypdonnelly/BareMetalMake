@@ -5,7 +5,7 @@ LFLAGS = -T startup_linker/stm32F103_linker_script.ld -nostartfiles -Wl,-Map=$(B
 BUILD_DIR = build
 BIN_DIR = bin
 
-OFILES = $(BUILD_DIR)/kernel.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/USART.o $(BUILD_DIR)/ADC.o $(BUILD_DIR)/systick.o $(BUILD_DIR)/timer.o 
+OFILES = $(BUILD_DIR)/kernel.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/trace.o $(BUILD_DIR)/timer.o 
 
 
 all : $(BIN_DIR)/input_compare.elf
@@ -25,15 +25,9 @@ $(BUILD_DIR)/stm32f103_startup.o : startup_linker/stm32F103_startup.c | $(BUILD_
 $(BUILD_DIR)/timer.o : Src/Timer.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 	
-$(BUILD_DIR)/USART.o : Src/USART.c | $(BUILD_DIR)
+$(BUILD_DIR)/trace.o : Src/trace.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $^ -o $@
 	
-$(BUILD_DIR)/ADC.o : Src/ADC.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $^ -o $@
-	
-$(BUILD_DIR)/systick.o : Src/SYSTICK.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $^ -o $@
-
 $(BIN_DIR)/input_compare.elf : $(OFILES) | $(BIN_DIR)
 	$(CC) $(LFLAGS) $^ -o $@
 

@@ -27,24 +27,20 @@ with systick being coretex-m peripheral references can be found in https://devel
  */
 #include <stdio.h>
 #include "stm32f103xb.h"
-#include "ADC.h"
-#include "USART.h"
-#include "SYSTICK.h"
+#include "trace.h"
 #include "Timer.h"
 
-
-
 int timestamp = 0;
-
 
 //setup : connect jumper wire from PB0 to PB9
 //timer 4 should toggle every 1000
 int main(void)
 {
+	trace_init();
+	printg("Starting W11_input_compare\r\n");
 
 	Tim3_PB0_output_compare();
 	Tim4_PB9_input_capture();
-
 
 	while(1)
 	{
@@ -52,6 +48,9 @@ int main(void)
 		while((TIM4->SR & SR_CC4IF)) {}
 		//read the captured counter value
 		timestamp = TIM4->CCR4;
+		printg("Input capture at %d\r\n", timestamp);
+		//clear the capture flag
+		TIM4->SR &= ~SR_CC4IF;	
 	}
 }
 
