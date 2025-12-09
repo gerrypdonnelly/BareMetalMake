@@ -12,14 +12,16 @@ IF "Donnelly" is received from the slave the on board LED turns off
 #include "stm32f103xb.h"
 #include "trace.h"
 // #include "Timer.h"
+void GpioInit(void);
+uint8_t ReadData(void);
+void SetUpSlaveAddress(void);
+uint8_t ReadData(void);
+void WriteDataToSLave(void);
 
 #define byte uint8_t
 
-int main(void)
+void GpioInit(void)
 {
-	trace_init();
-	printg("Starting I2C example\r\n");
-
 	// Set up PB6 and PB7 for I2C1
 	RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;												  // Enable GPIOB clock
 	GPIOB->CRL &= ~(GPIO_CRL_MODE6 | GPIO_CRL_CNF6 | GPIO_CRL_MODE7 | GPIO_CRL_CNF7); // Clear settings
@@ -31,7 +33,6 @@ int main(void)
 	I2C1->CCR = 36;						// Set clock control register for 100kHz I2C clock (assuming 8MHz PCLK1)
 	I2C1->TRISE = 9;					// Set maximum rise time
 	printg("I2C1 initialized\r\n");
-
 	// Configure LED PB2
 	RCC->APB2ENR |= (1U << 3); // Enable clock to PB
 	// Set Mode of LED pin to output max speed 50Mhz
@@ -40,12 +41,18 @@ int main(void)
 	// Set CNF of LED pin to Output push pull
 	GPIOB->CRL &= ~(1U << 10);
 	GPIOB->CRL &= ~(1U << 11);
+}
 
+void SetUpSlaveAddress(void)
+{
 	// Set up slave address
 	I2C1->OAR1 = (0x8 << 1); // Set own address to 0x8
 	printg("I2C1 own address set to 0x8\r\n");
+}
 
-	// read data from slave at address 0x8
+uint8_t ReadData(void)
+{
+	// Read data from slave at address 0x8
 	printg("Requesting data from slave 0x8\r\n");
 	I2C1->CR1 |= I2C_CR1_START; // Generate start condition
 	while (!(I2C1->SR1 & I2C_SR1_SB))
@@ -68,7 +75,11 @@ int main(void)
 	{
 		GPIOB->ODR &= ~(1U << 2);
 	}
+	return receivedData;
+}
 
+void WriteDataToSLave(void)
+{
 	// write data to slave at address 0x8
 	printg("Sending data to slave 0x8\r\n");
 	I2C1->CR1 |= I2C_CR1_START; // Generate start condition
@@ -84,9 +95,26 @@ int main(void)
 	I2C1->CR1 |= I2C_CR1_STOP; // Generate stop condition
 	printg("Data sent to slave\r\n");
 	printg("I2C example complete\r\n");
+}
+
+int main(void)
+{
+	trace_init();
+	printg("Starting I2C example\r\n");
+	GpioInit();
+	SetUpSlaveAddress();
+
+	WriteDataToSLave();
 
 	while (1)
 	{
+		ReadData();
+		printg("Data from slave:- %d\r\n", receivedData)
+
+			if ButtonPress ()
+		{
+			I2C1->DR = 1;
+		}
 	}
 }
 

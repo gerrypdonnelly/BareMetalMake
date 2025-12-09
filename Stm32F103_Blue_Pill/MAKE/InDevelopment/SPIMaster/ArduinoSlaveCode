@@ -1,0 +1,46 @@
+#include <Wire.h>
+
+#define LEDPIN PC13
+#define BUTTONPIN PA0
+#define SLAVEADDRESS 0x8
+
+int sendData = 0;
+
+void setup()
+{
+pinMode(BUTTONPIN, INPUT);
+pinMode(LED, OUTPUT);
+Wire.begin();
+}
+
+void loop()
+{
+int buttonValue = digitalRead(BUTTONPIN);
+
+Wire.requestFrom(SLAVEADDRESS, 1);
+byte readData = Wire.read();
+
+if (readData == 1)
+{
+digitalWrite(LED,HIGH);
+}
+else
+{
+digitalWrite(LED,LOW);
+}
+
+if(buttonValue == HIGH)
+{
+sendData = 1;
+}
+
+else
+{
+sendData = 0;
+}
+
+Wire.beginTransmission(SLAVEADDRESS);
+Wire.write(sendData);
+Wire.endTransmission();
+delay(500);
+}
