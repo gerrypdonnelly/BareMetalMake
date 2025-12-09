@@ -21,7 +21,7 @@ void GpioInit(void);
 uint8_t ReadData(void);
 void SetUpSlaveAddress(void);
 uint8_t ReadData(void);
-void WriteDataToSLave(void);
+void WriteDataToSlave(void);
 
 
 void GpioInit(void)
@@ -95,7 +95,7 @@ uint8_t ReadData(void)
 	return receivedData;
 }
 
-void WriteDataToSLave(void)
+void WriteDataToSlave(void)
 {
 	// write data to slave at address 0x8
 	printg("Sending data to slave 0x8\r\n");
@@ -125,11 +125,12 @@ int main(void)
 	while (1)
 	{
 		ReadData();
-		printg("Data from slave:- %s\r\n", receivedData);
+		printg("Data from slave:-\r\n");
 
 			if(GPIOA->IDR |= (1U<<3))
 		{
 			I2C1->DR = 1;
+			WriteDataToSlave();
 		}
 	}
 }
