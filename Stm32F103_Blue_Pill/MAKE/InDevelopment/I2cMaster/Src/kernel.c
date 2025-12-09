@@ -9,8 +9,13 @@ IF "Donnelly" is received from the slave the on board LED turns off
  ******************************************************************************
  */
 #include <stdio.h>
+#include <stdint.h>
 #include "stm32f103xb.h"
 #include "trace.h"
+
+#define byte uint8_t 
+
+
 // #include "Timer.h"
 void GpioInit(void);
 uint8_t ReadData(void);
@@ -18,7 +23,6 @@ void SetUpSlaveAddress(void);
 uint8_t ReadData(void);
 void WriteDataToSLave(void);
 
-#define byte uint8_t
 
 void GpioInit(void)
 {
@@ -41,6 +45,19 @@ void GpioInit(void)
 	// Set CNF of LED pin to Output push pull
 	GPIOB->CRL &= ~(1U << 10);
 	GPIOB->CRL &= ~(1U << 11);
+	printg("LED initialized\r\n");
+	// Configure on board push button
+
+	RCC->APB2ENR |= (1U << 2); // Enable clock to PA
+	// Set Mode of button to input
+	GPIOA->CRL |= (1U << 3);
+	GPIOA->CRL &= ~(1U << 2);
+	// Set CNF of BUTTON pin to input
+	GPIOA->CRL &= ~(1U << 1);
+	GPIOA->CRL &= ~(1U << 0);
+	// SET PUll down resistor of BUTTON pin by setting ODR to 1
+	GPIOA->ODR &= ~(1U << 0);
+	printg("Push button initialized\r\n");
 }
 
 void SetUpSlaveAddress(void)
@@ -67,11 +84,11 @@ uint8_t ReadData(void)
 	printg("Received data: %d\r\n", receivedData);
 	I2C1->CR1 |= I2C_CR1_STOP; // Generate stop condition
 	printg("I2C transaction complete\r\n");
-	if (receivedData == "Gerard")
+	if (receivedData == 1)
 	{
 		GPIOB->ODR |= (1U << 2);
 	}
-	if (receivedData == "Donnelly")
+	if (receivedData == 2)
 	{
 		GPIOB->ODR &= ~(1U << 2);
 	}
@@ -104,14 +121,13 @@ int main(void)
 	GpioInit();
 	SetUpSlaveAddress();
 
-	WriteDataToSLave();
 
 	while (1)
 	{
 		ReadData();
-		printg("Data from slave:- %d\r\n", receivedData)
+		printg("Data from slave:- %s\r\n", receivedData);
 
-			if ButtonPress ()
+			if(GPIOA->IDR |= (1U<<3))
 		{
 			I2C1->DR = 1;
 		}
