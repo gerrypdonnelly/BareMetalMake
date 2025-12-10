@@ -11,13 +11,15 @@ int main(void)
 {
 
     I2C1_Init();
-    SetUpSlaveAddress();
+    
 
     LCD_Init();
 
-    LCD_SendString("Hello world");
+   // LCD_SendString("Hello world");
 
     while (1)
     {
+        LCD_SendString("Hello world");
+
     }
 }
