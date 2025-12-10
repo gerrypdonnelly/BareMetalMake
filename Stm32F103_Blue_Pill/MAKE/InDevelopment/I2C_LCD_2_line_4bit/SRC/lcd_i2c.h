@@ -8,8 +8,10 @@
 
 void I2C1_Init(void);
 void LCD_Init(void);
+
 void LCD_SendCommand(uint8_t cmd);
 void LCD_SendData(uint8_t data);
 void LCD_SendString(char *str);
-
+void SetUpSlaveAddress(void);
+void I2C_Write(uint8_t data);
 #endif

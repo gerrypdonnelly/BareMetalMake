@@ -1,10 +1,18 @@
+/*
+I2C connected to SCL->PB6 SDA->PB7
+*/
+
 #include "stm32f103xb.h"
 #include "lcd_i2c.h"
+#include "trace.h"
+#include <stdint.h>
 
 int main(void)
 {
-    SystemInit();
+
     I2C1_Init();
+    SetUpSlaveAddress();
+
     LCD_Init();
 
     LCD_SendString("Hello world");
