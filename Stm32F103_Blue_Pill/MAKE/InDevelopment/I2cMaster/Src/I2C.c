@@ -15,18 +15,25 @@ void GpioInit(void)
     I2C1->CR1 = I2C_CR1_PE;             // Enable I2C1 peripheral
     I2C1->CCR = 36;                     // Set clock control register for 100kHz I2C clock (assuming 8MHz PCLK1)
     I2C1->TRISE = 9;                    // Set maximum rise time
-    printg("I2C1 initialized\r\n");
+    printg("    I2C1 initialized\r\n");
 }
 
 void SetUpSlaveAddress(void)
 {
     // Set up slave address
     I2C1->OAR1 = (0x8 << 1); // Set own address to 0x8
-    printg("I2C1 own address set to 0x8\r\n");
+    printg("    I2C1 own address set to 0x8\r\n");
 }
 
 uint8_t ReadI2CData(void)
 {
+    /*
+    Generate Start condition
+    Send slave address with read flag(wait for slave address to be sent)
+    Clear address flag by reading address flag
+    Wait for data to be received
+    Send stop condition
+    */
     // Read data from slave at address 0x8
     printg("Requesting data from slave 0x8\r\n");
     I2C1->CR1 |= I2C_CR1_START; // Generate start condition
@@ -37,7 +44,7 @@ uint8_t ReadI2CData(void)
         ;            // Wait for address sent
     (void)I2C1->SR2; // Clear ADDR flag by reading SR2
     while (!(I2C1->SR1 & I2C_SR1_RXNE))
-        ;                         // Wait for data received
+        ;                            // Wait for data received
     uint8_t receivedData = I2C1->DR; // Read received data
     printg("Received data: %d\r\n", receivedData);
     I2C1->CR1 |= I2C_CR1_STOP; // Generate stop condition

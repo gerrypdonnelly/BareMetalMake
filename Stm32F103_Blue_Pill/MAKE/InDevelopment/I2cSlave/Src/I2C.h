@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "stm32f103xb.h"
 
-void GpioInit(void);
+void I2cGpioInit(void);
 uint8_t ReadI2CData(void);
 void SetUpSlaveAddress(void);
 uint8_t ReadI2CData(void);

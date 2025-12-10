@@ -1,6 +1,7 @@
 /**
  ******************************************************************************
 I2C Master Example - Kernel File
+LED connected to PB2
 I2C Ports
 I2C1 - PB6 (SCL), PB7 (SDA)
 I2C2 - PB10 (SCL), PB11 (SDA)
@@ -17,9 +18,9 @@ IF "Donnelly" is received from the slave the on board LED turns off
 int main(void)
 {
 	trace_init();
-	printg("Starting I2C example\r\n");
+	printg("Starting I2C Master example\r\n\n\n");
 	GpioInit();
-	SetUpSlaveAddress();
+	// SetUpSlaveAddress();
 
 	// Configure LED PB2
 	RCC->APB2ENR |= (1U << 3); // Enable clock to PB
@@ -29,7 +30,8 @@ int main(void)
 	// Set CNF of LED pin to Output push pull
 	GPIOB->CRL &= ~(1U << 10);
 	GPIOB->CRL &= ~(1U << 11);
-	printg("LED initialized\r\n");
+	printg("    LED initialized\r\n");
+	GPIOB->BSRR |= (1U << 2);
 	// Configure on board push button
 
 	RCC->APB2ENR |= (1U << 2); // Enable clock to PA
@@ -41,16 +43,14 @@ int main(void)
 	GPIOA->CRL &= ~(1U << 0);
 	// SET PUll down resistor of BUTTON pin by setting ODR to 1
 	GPIOA->ODR &= ~(1U << 0);
-	printg("Push button initialized\r\n");
-
-	
+	printg("    Push button initialized\r\n\n\n");
 
 	while (1)
 	{
 		ReadI2CData();
 		printg("Data from slave:-\r\n");
 
-			if(GPIOA->IDR |= (1U<<3))
+		if (GPIOA->IDR |= (1U << 3))
 		{
 			I2C1->DR = 1;
 			WriteI2CDataToSlave();

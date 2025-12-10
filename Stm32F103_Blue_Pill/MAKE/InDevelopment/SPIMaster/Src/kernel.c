@@ -13,6 +13,7 @@ IF "Donnelly" is received from the slave the on board LED turns off
 #include "trace.h"
 
 #define byte uint8_t
+uint16_t ReceivedData = 0;
 
 int main(void)
 {
@@ -38,14 +39,14 @@ int main(void)
 
 	printg("Requesting data from slave\r\n");
 
-	printg("Received data: %d\r\n", receivedData);
+	printg("Received data: %d\r\n", ReceivedData);
 
 	printg("SPI transaction complete\r\n");
-	if (receivedData == "Gerard")
+	if (ReceivedData == "Gerard")
 	{
 		GPIOB->ODR |= (1U << 2);
 	}
-	if (receivedData == "Donnelly")
+	if (ReceivedData == "Donnelly")
 	{
 		GPIOB->ODR &= ~(1U << 2);
 	}

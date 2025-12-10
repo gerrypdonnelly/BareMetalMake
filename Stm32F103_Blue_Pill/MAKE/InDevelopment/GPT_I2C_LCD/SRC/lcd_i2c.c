@@ -1,4 +1,4 @@
-#include "stm32f103xb.h"    
+#include "stm32f103xb.h"
 #include "lcd_i2c.h"
 #include <stdint.h>
 
@@ -14,8 +14,8 @@ void I2C1_Init(void)
     GPIO_InitTypeDef GPIO_InitStruct;
     I2C_InitTypeDef I2C_InitStruct;
 
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+    RCC->APB2ENR |= (1U << 3);
 
     // PB6 = SCL, PB7 = SDA
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
