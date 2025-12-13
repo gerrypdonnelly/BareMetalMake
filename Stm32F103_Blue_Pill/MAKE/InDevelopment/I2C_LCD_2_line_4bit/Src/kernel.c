@@ -10,16 +10,12 @@ I2C connected to SCL->PB6 SDA->PB7
 int main(void)
 {
 
-    I2C1_Init();
-    
-
-    LCD_Init();
-
-   // LCD_SendString("Hello world");
+    Minimum_I2C1_Init();
 
     while (1)
     {
-        LCD_SendString("Hello world");
-
-    }
+ TEST_I2C_Write(0x00);
+        for (volatile int i=0;i<200000;i++);
+        TEST_I2C_Write(0xFF);
+        for (volatile int i=0;i<200000;i++);    }
 }

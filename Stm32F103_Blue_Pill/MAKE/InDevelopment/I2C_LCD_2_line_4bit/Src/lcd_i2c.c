@@ -6,28 +6,40 @@
 #define LCD_BACKLIGHT 0x08
 #define ENABLE_BIT 0x04
 #define LCD_I2C_ADDR 0x27
+#define RW_BIT 0x02
 
-static void LCD_Send4Bits(uint8_t data);
-static void LCD_PulseEnable(uint8_t data);
 
 void I2C1_Init(void)
 {
+    for (volatile int i = 0; i < 200000; i++);  // ~40 ms
+
     // Set up PB6 and PB7 for I2C1
-    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;                                               // Enable GPIOB clock
+   RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+
     GPIOB->CRL &= ~(GPIO_CRL_MODE6 | GPIO_CRL_CNF6 |
                 GPIO_CRL_MODE7 | GPIO_CRL_CNF7);
 
-    GPIOB->CRL |= (GPIO_CRL_MODE6_1 | GPIO_CRL_CNF6_1) |   // PB6 SCL AF open-drain
-              (GPIO_CRL_MODE7_1 | GPIO_CRL_CNF7_1);    // PB7 SDA AF open-drain
+    GPIOB->CRL |= (GPIO_CRL_MODE6 | GPIO_CRL_CNF6_1) |  // PB6 AF Open-drain 50 MHz
+              (GPIO_CRL_MODE7 | GPIO_CRL_CNF7_1);   // PB7 AF Open-drain 50 MHz
+
+
+
+
 
     // Set up I2C1
-    RCC->APB1ENR |= RCC_APB1ENR_I2C1EN; // Enable I2C1 clock
-    I2C1->CR1 = I2C_CR1_PE;             // Enable I2C1 peripheral
-   // I2C1->CCR = 36;                     // Set clock control register for 100kHz I2C clock (assuming 8MHz PCLK1)
-   
-    I2C1->CR2 = 8;        // APB1 = 8 MHz
-    I2C1->CCR = 40;       // 100 kHz standard mode
-    I2C1->TRISE = 9;
+    RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
+
+    I2C1->CR1 &= ~I2C_CR1_PE;
+    //I2C1->CR2 = 8;
+    //I2C1->CCR = 40;
+    //I2C1->TRISE = 9;
+    I2C1->CR2   = 4;    // APB1 = 4 MHz
+    I2C1->CCR   = 20;   // 100 kHz
+    I2C1->TRISE = 5;    // (4 MHz * 1 µs) + 1
+
+    I2C1->CR1 |= I2C_CR1_ACK;
+    I2C1->CR1 |= I2C_CR1_PE;
 
     printg("    I2C1 initialized\r\n");
 }
@@ -37,7 +49,9 @@ void I2C1_Init(void)
 void WriteI2CDataToSlave(void)
 {
     // write data to slave at defined address
-    printg("Sending data to slave 0x3f\r\n");
+    printg("Sending data to slave 0x27\r\n");
+    while (I2C1->SR2 & I2C_SR2_BUSY);
+
     I2C1->CR1 |= I2C_CR1_START; // Generate start condition
     while (!(I2C1->SR1 & I2C_SR1_SB))
         ;                  // Wait for start condition generated
@@ -53,11 +67,6 @@ void WriteI2CDataToSlave(void)
     printg("I2C example complete\r\n");
 }
 
-static void LCD_Send4Bits(uint8_t data)
-{
-    //I2C_Write(data | LCD_BACKLIGHT);
-    //  LCD_PulseEnable(data);
-}
 
 void LCD_SendCommand(uint8_t cmd)
 {
@@ -121,10 +130,12 @@ void LCD_SetCursor(uint8_t row, uint8_t col)
 
 void I2C_Write(uint8_t data)
 {
+    while (I2C1->SR2 & I2C_SR2_BUSY);
+
     I2C1->CR1 |= I2C_CR1_START;
     while(!(I2C1->SR1 & I2C_SR1_SB));
 
-    I2C1->DR = (LCD_I2C_ADDR << 1);   // 0x27 or 0x3F
+    I2C1->DR = (LCD_I2C_ADDR << 1);   // 0x27 o
     while(!(I2C1->SR1 & I2C_SR1_ADDR));
     (void)I2C1->SR2;
 
@@ -143,11 +154,53 @@ void LCD_PulseEnable(uint8_t data)
 }
 
 
-static void LCD_Send4Bits(uint8_t data)
+void LCD_Send4Bits(uint8_t data)
 {
     data |= LCD_BACKLIGHT;
+    data &= ~RW_BIT;    // Force write mode
     I2C_Write(data);
     LCD_PulseEnable(data);
 }
 
 
+void Minimum_I2C1_Init(void)
+{
+    RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+    RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
+
+    // PB6, PB7 = AF Open-Drain 50 MHz
+    GPIOB->CRL &= ~(GPIO_CRL_MODE6 | GPIO_CRL_CNF6 |
+                    GPIO_CRL_MODE7 | GPIO_CRL_CNF7);
+    GPIOB->CRL |= (GPIO_CRL_MODE6 | GPIO_CRL_CNF6_1) |
+                  (GPIO_CRL_MODE7 | GPIO_CRL_CNF7_1);
+
+    // Reset I2C
+    I2C1->CR1 |= I2C_CR1_SWRST;
+    I2C1->CR1 &= ~I2C_CR1_SWRST;
+
+    // Configure for PCLK1 = 4 MHz
+    I2C1->CR1 &= ~I2C_CR1_PE;
+    I2C1->CR2   = 4;
+    I2C1->CCR   = 20;
+    I2C1->TRISE = 5;
+    I2C1->CR1 |= I2C_CR1_ACK;
+    I2C1->CR1 |= I2C_CR1_PE;
+}
+void TEST_I2C_Write(uint8_t data)
+{
+    while (I2C1->SR2 & I2C_SR2_BUSY);
+
+    I2C1->CR1 |= I2C_CR1_START;
+    while (!(I2C1->SR1 & I2C_SR1_SB));
+    (void)I2C1->SR1;
+
+    I2C1->DR = (0x27 << 1);
+    while (!(I2C1->SR1 & I2C_SR1_ADDR));
+    (void)I2C1->SR2;
+
+    I2C1->DR = data;
+    while (!(I2C1->SR1 & I2C_SR1_BTF));
+
+    I2C1->CR1 |= I2C_CR1_STOP;
+}

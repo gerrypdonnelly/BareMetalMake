@@ -12,6 +12,10 @@ void LCD_Init(void);
 void LCD_SendCommand(uint8_t cmd);
 void LCD_SendData(uint8_t data);
 void LCD_SendString(char *str);
-
+void LCD_Send4Bits(uint8_t data);
+void LCD_PulseEnable(uint8_t data);
+void LCD_SetCursor(uint8_t row, uint8_t col);
 void I2C_Write(uint8_t data);
+void Minimum_I2C1_Init(void);
+void TEST_I2C_Write(uint8_t data);
 #endif
