@@ -32,27 +32,44 @@ with systick being coretex-m peripheral references can be found in https://devel
 #include "SYSTICK.h"
 #include "Timer.h"
 
-
-
 int timestamp = 0;
 
-
-//setup : connect jumper wire from PB0 to PB9
-//timer 4 should toggle every 1000
+// setup : connect jumper wire from PB0 to PB9
+// timer 4 should toggle every 1000
 int main(void)
 {
 
 	Tim3_PB0_output_compare();
 	Tim4_PB9_input_capture();
 
-
-	while(1)
+	while (1)
 	{
-		//wait until edge is captured
-		while((TIM4->SR & SR_CC4IF)) {}
-		//read the captured counter value
+		// wait until edge is captured
+		while ((TIM4->SR & SR_CC4IF))
+		{
+		}
+		// read the captured counter value
 		timestamp = TIM4->CCR4;
 	}
 }
 
+void StopStart(void)
+{
+	// if menu pressed stop watering and auto 1 - stop watering
+	// if menu pressed stop watering - set Water 1
+}
+void Auto(void)
+{
+	// if calibration 1 and time > 0 loop in the auto
+	// if calibration 0 allert calibration not complete
+	// if time is <= 0 allert time is not set
+}
 
+void Water(void)
+{
+	// if watering = 0 turn on water while menu is pressed
+}
+
+void Settings(void)
+{
+}

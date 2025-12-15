@@ -1,0 +1,48 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" version="29.2.1">
+  <diagram id="6a731a19-8d31-9384-78a2-239565b7b9f0" name="Page-1">
+    <mxGraphModel dx="1250" dy="560" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="shape=mxgraph.flowchart.terminator;strokeWidth=2;gradientColor=none;gradientDirection=north;fontStyle=0;html=1;" value="start" vertex="1">
+          <mxGeometry height="30" width="120" x="489.5" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="shape=mxgraph.flowchart.data;strokeWidth=2;gradientColor=none;gradientDirection=north;fontStyle=0;html=1;" value="Blank screen" vertex="1">
+          <mxGeometry height="80" width="159" x="470" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="7" edge="1" parent="1" source="2" style="fontStyle=1;strokeColor=#003366;strokeWidth=1;html=1;" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8" edge="1" parent="1" source="3" style="fontStyle=1;strokeColor=#003366;strokeWidth=1;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ZiRq083iTvUI_wuDVkMf-63">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="549.5" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZiRq083iTvUI_wuDVkMf-60" edge="1" parent="1" source="ZiRq083iTvUI_wuDVkMf-63" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ZiRq083iTvUI_wuDVkMf-59">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="549.5" y="320" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZiRq083iTvUI_wuDVkMf-56" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Delay timer" vertex="1">
+          <mxGeometry height="60" width="120" x="340" y="245" as="geometry" />
+        </mxCell>
+        <mxCell id="ZiRq083iTvUI_wuDVkMf-58" edge="1" parent="1" source="ZiRq083iTvUI_wuDVkMf-56" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.095;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZiRq083iTvUI_wuDVkMf-61" edge="1" parent="1" source="ZiRq083iTvUI_wuDVkMf-59" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="ZiRq083iTvUI_wuDVkMf-56">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZiRq083iTvUI_wuDVkMf-59" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="Time out" vertex="1">
+          <mxGeometry height="90" width="100.5" x="499.25" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="ZiRq083iTvUI_wuDVkMf-63" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Button pressed" vertex="1">
+          <mxGeometry height="60" width="120" x="489.5" y="240" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
