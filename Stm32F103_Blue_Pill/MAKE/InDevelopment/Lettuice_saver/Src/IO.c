@@ -32,3 +32,13 @@ GPIOB->ODR &=~(1U<<14);
 }
 
 
+void WateringOn(void)
+{
+	GPIOB->ODR |=(1U<<15);	// Set bit to turn on pump
+}
+
+
+void WateringOff(void)
+{
+	GPIOB->ODR &=~(1U<<15);	// Reset bit to turn off pump
+}

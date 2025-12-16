@@ -82,15 +82,6 @@ bool LeftPressed;
 bool RightPressed;
 uint16_t DTime = 10000; // delay time
 
-void WateringOn(void)
-{
-	// Set bit to turn on pump
-}
-void WateringOff(void)
-{
-	// Reset bit to turn off pump
-}
-
 void ReadButtons(void)
 {
 	if (GPIOB->IDR & (1U << 12))
@@ -122,116 +113,123 @@ void ReadButtons(void)
 	}
 }
 
-
-
 int main(void)
 {
-ConfigureIO();
-trace_init();
-printg("Lettuice saver program");
+	ConfigureIO();
+	trace_init();
+	pa1_adc_init();
 
-while (1)
-{
+	printg("Lettuice saver program\r\n");
 
-	printg("ScreenStatus %x", ScreenStatus);
-	ReadButtons();
-	if (OkPressed | LeftPressed | RightPressed)
-	LastScreenStatus = ScreenStatus;
-	if ((ScreenStatus == 0x00) && (LastScreenStatus==0x00))
+	while (1)
 	{
-		ScreenStatus = 0x01;
-	}
-	printg("ScreenStatus %x", ScreenStatus);
-
-
-	switch (ScreenStatus)
-	{
-	case 0x00:
-		ClearScreen(); // Clear the LCD screen
-	printg("Screen cleared\r\n");
-		break;
-
-	case 0x01:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		printg("Hello Allyson\r\n");
-		LCDSendAString("Hello Allyson"); // Hello screen
-		for (int8_t i = 0; i <= DTime; i++)
-			;
+		printg("ScreenStatus %x\r\n", ScreenStatus);
+		ReadButtons();
 		if (OkPressed | LeftPressed | RightPressed)
 			LastScreenStatus = ScreenStatus;
-		if ((LastScreenStatus == 0x00) && (ScreenStatus == 0x01))
+		if ((ScreenStatus == 0x00) && (LastScreenStatus == 0x00))
 		{
-			ScreenStatus = 0x02;
+			ScreenStatus = 0x01;
 		}
-		break;
+		printg("ScreenStatus %x\r\n", ScreenStatus);
 
-	case 0x02:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("Automation Stoped"); // Stop the automated system
-		break;
-
-	case 0x03:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("Automation Started"); // Start the automated system
-		break;
-
-	case 0x04:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("Sensor calibration"); // Calibration
-		break;
-
-	case 0x05:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("Watering"); // Watering
-		while (OkPressed)
+		switch (ScreenStatus)
 		{
-			WateringOn();
+		case 0x00:
+			ClearScreen(); // Clear the LCD screen
+			printg("Screen cleared\r\n");
+			break;
+
+		case 0x01:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Hello Allyson\r\n");
+			LCDSendAString("Hello Allyson"); // Hello screen
+			for (int8_t i = 0; i <= DTime; i++)
+				;
+			if (OkPressed | LeftPressed | RightPressed)
+				LastScreenStatus = ScreenStatus;
+			if ((LastScreenStatus == 0x00) && (ScreenStatus == 0x01))
+			{
+				ScreenStatus = 0x02;
+			}
+			break;
+
+		case 0x02:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Automation stopped\r\n");
+			LCDSendAString("Automation Stoped"); // Stop the automated system
+			break;
+
+		case 0x03:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Automation started\r\n");
+			LCDSendAString("Automation Started"); // Start the automated system
+			break;
+
+		case 0x04:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Sensor calibration\r\n");
+			LCDSendAString("Sensor calibration"); // Calibration
+			break;
+
+		case 0x05:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Watering\r\n");
+			LCDSendAString("Watering"); // Watering
+			while (OkPressed)
+			{
+				WateringOn();
+			}
+			WateringOff();
+			break;
+
+		case 0x06:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Settings\r\n");
+			LCDSendAString("Settings"); // Settings menu
+			break;
+
+		case 0x07:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Watering time\r\n");
+			LCDSendAString("Watering time"); // Watering time
+			break;
+
+		case 0x08:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Moisture Start point\r\n");
+			LCDSendAString("Moisture Start point"); // Moisture start point
+			break;
+
+		case 0x09:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Moisture stop point\r\n");
+			LCDSendAString("Moisture stop point"); // Moisture stop point
+			break;
+
+		case 0x0A:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("How often to test\r\n");
+			LCDSendAString("How often to test"); // How often to test
+			break;
+
+		default:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("No input\r\n");
+			LCDSendAString("No input"); // No input
 		}
-		WateringOff();
-		break;
-
-	case 0x06:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("Settings"); // Settings menu
-		break;
-
-	case 0x07:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("Watering time"); // Watering time
-		break;
-
-	case 0x08:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("Moisture Start point"); // Moisture start point
-		break;
-
-	case 0x09:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("Moisture stop point"); // Moisture stop point
-		break;
-
-	case 0x0A:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("How often to test"); // How often to test
-		break;
-
-	default:
-		ClearScreen();
-		LCDGotoXY(0, 0);
-		LCDSendAString("No input"); // No input
 	}
-	
-}
 }
 
 /*Tim3_PB0_output_compare();
