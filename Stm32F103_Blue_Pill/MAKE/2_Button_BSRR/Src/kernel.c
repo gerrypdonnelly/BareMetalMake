@@ -27,7 +27,7 @@ GPIOA->CRL &=~(1U<<2);
 //Set CNF of BUTTON pin to input
 GPIOA->CRL &=~(1U<<1);
 GPIOA->CRL &=~(1U<<0);
-//SET PUll down resistor of BUTTON pin by setting ODR to 1
+//SET PUll down resistor of BUTTON pin by setting ODR to 0
 GPIOA->ODR &=~(1U<<0);
 
 while(1)
