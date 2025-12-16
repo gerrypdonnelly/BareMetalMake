@@ -28,9 +28,10 @@ with systick being coretex-m peripheral references can be found in https://devel
 #include <stdio.h>
 #include "stm32f103xb.h"
 #include "ADC.h"
-#include "USART.h"
+#include "trace.h"
 #include "SYSTICK.h"
 #include "Timer.h"
+#include "LCD.h"
 
 int timestamp = 0;
 
@@ -40,6 +41,7 @@ int main(void)
 {
 
 	Tim3_PB0_output_compare();
+	printg("Main loop\r\n");
 	Tim4_PB9_input_capture();
 
 	while (1)
@@ -53,23 +55,79 @@ int main(void)
 	}
 }
 
-void StopStart(void)
+void ProgramCode(void)
 {
-	// if menu pressed stop watering and auto 1 - stop watering
-	// if menu pressed stop watering - set Water 1
-}
-void Auto(void)
-{
-	// if calibration 1 and time > 0 loop in the auto
-	// if calibration 0 allert calibration not complete
-	// if time is <= 0 allert time is not set
+	uint16_t ScreenStatus = 0x00;
+	uint8_t nop;
+	uint8_t WateringOn;
+	switch (ScreenStatus)
+	{
+	case 0x00:
+		ClearScreen(); // Clear the LCD screen
+		break;
+
+	case 0x01:
+		ClearScreen();
+		LCDGotoXY(0, 0);
+		LCDSendAString("Hello Eddie"); // Hello screen
+		break;
+
+	case 0x02:
+		ClearScreen();
+		LCDGotoXY(0, 0);
+		LCDSendAString("Automation Stoped"); // Stop the automated system
+		break;
+
+	case 0x03:
+		ClearScreen();
+		LCDGotoXY(0, 0);
+		LCDSendAString("Automation Started"); // Start the automated system
+		break;
+
+	case 0x04:
+		ClearScreen();
+		LCDGotoXY(0, 0);
+		LCDSendAString("Sensor calibration"); // Calibration
+		break;
+
+	case 0x05:
+		ClearScreen();
+		LCDGotoXY(0, 0);
+		LCDSendAString("Watering"); // Watering
+		while (OkPressed)
+		{
+			WateringOn();
+		}
+		break;
+
+	case 0x06:
+		nop = 7; // Settings menu
+		break;
+
+	case 0x07:
+		nop = 8; // Watering time
+		break;
+
+	case 0x08:
+		nop = 9; // moisture start point
+		break;
+
+	case 0x09:
+		nop = 10; // moisture stop point
+		break;
+
+	case 0x0A:
+		nop = 11; // how often to test
+		break;
+
+	default:
+		nop = 11;
+	}
 }
 
-void Water(void)
+if (/*any button pressed and ScreenStatus == 0x00*/)
 {
-	// if watering = 0 turn on water while menu is pressed
+	LcdEnable(); // Turn on LCD
+	Set ScreenStatus == 0x01;
 }
-
-void Settings(void)
-{
 }
