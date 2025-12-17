@@ -59,9 +59,10 @@ LCD_Rw		B9	--|			|--C15
 int timestamp = 0;
 uint16_t ScreenStatus = 0x00;
 uint16_t LastScreenStatus = 0x00;
-bool OkPressed;
-bool LeftPressed;
-bool RightPressed;
+volatile bool OkPressed;
+volatile bool LeftPressed;
+volatile bool RightPressed;
+volatile bool LCD_status;
 uint16_t DTime = 10000; // delay time
 
 void ReadButtons(void)
@@ -97,6 +98,7 @@ void ReadButtons(void)
 
 int main(void)
 {
+	LCD_status = 1;
 	ConfigureIO();
 	trace_init();
 	pa1_adc_init();
@@ -112,91 +114,121 @@ int main(void)
 		{
 		case 0x00:
 			ClearScreen(); // Clear the LCD screen
+			if(LCD_status) 
+			{
 			printg("Screen blanked\r\n");
+			LCD_status =0;
+			}
 			if (OkPressed | LeftPressed | RightPressed)
 			{
 				ScreenStatus = 0x01;
+				LCD_status = 1;
 			}
 			break;
 
 		case 0x01:
 			ClearScreen();
 			LCDGotoXY(0, 0);
+			if(LCD_status)
+			{
 			printg("Hello Allyson\r\n");
 			LCDSendAString("Hello Allyson"); // Hello screen
+				LCD_status =0;
+			}
 			LastScreenStatus = ScreenStatus;
 			if (OkPressed)
 			{
 				ScreenStatus = 0x02;
+				LCD_status =1;
 			}
 			if (LeftPressed)
 			{
 				ScreenStatus = 0x00;
+				LCD_status = 1;
 			}
 			break;
 
 		case 0x02:
 			ClearScreen();
 			LCDGotoXY(0, 0);
+			if(LCD_status)
+			{
 			printg("Menu Press right to scrool\r\n");
 			LCDSendAString("Menu Press right"); // Stop the automated system
 			LCDGotoXY(1, 0);
 			LCDSendAString("to scrool ->");
-			LastScreenStatus = ScreenStatus;
+			LCD_status = 0;
+			}
 			if (RightPressed)
 			{
 				ScreenStatus = 0x03;
+				LCD_status=1;
 			}
 			if (LeftPressed)
 			{
 				ScreenStatus = 0x02;
+				LCD_status = 1;
 			}
 			break;
 
 		case 0x03:
 			ClearScreen();
+			if(LCD_status)
+			{
 			LCDGotoXY(0, 0);
 			printg("Calibrate probe\r\n");
 			LCDSendAString("Calibrate probe"); // Start the automated system
-			LastScreenStatus = ScreenStatus;
+			LCD_status =0;
+			}
 			if (OkPressed)
 			{
 				ScreenStatus = 0x04;
+				LCD_status = 1;
 			}
 			if (LeftPressed)
 			{
 				ScreenStatus = 0x02;
+				LCD_status = 1;
 			}
 			if (RightPressed)
 			{
 				// go to next menu
+				LCD_status = 1;
 			}
 			break;
 
 		case 0x04:
 			ClearScreen();
+			if(LCD_status)
+			{
 			LCDGotoXY(0, 0);
 			printg("Dry probe and press OK\r\n");
 			LCDSendAString("Dry probe and press OK"); // Calibration
-			LastScreenStatus = ScreenStatus;
+			LCD_status = 0;
+			}
 			if (OkPressed)
 			{
 				// Read analog input
 				// Store value in memory
 				ScreenStatus = 0x05;
+				LCD_status = 1;
 			}
 			if (LeftPressed)
 			{
 				ScreenStatus = 0x02;
+				LCD_status = 1;
 			}
 			break;
 
 		case 0x05:
 			ClearScreen();
+			if(LCD_status)
+			{
 			LCDGotoXY(0, 0);
 			printg("Wet probe and press OK\r\n");
 			LCDSendAString("Wet probe and press OK"); // Watering
-			LastScreenStatus = ScreenStatus;
+			LCD_status = 0;
+			}
 			if (OkPressed)
 			{
 				// Read analog input
@@ -206,53 +238,130 @@ int main(void)
 				printg("Probe calibrated\r\n");
 				LCDSendAString("Probe calibrated"); // Watering
 				ScreenStatus = 0x02;
+				LCD_status = 0;
 			}
 			if (LeftPressed)
 			{
 				ScreenStatus = 0x02;
+				LCD_status=1;
 			}
 			break;
 
 		case 0x06:
 			ClearScreen();
+			if(LCD_status)
+			{
 			LCDGotoXY(0, 0);
 			printg("Settings\r\n");
 			LCDSendAString("Settings"); // Settings menu
+			LCD_status = 0;
+			}
+			if(LeftPressed)
+			{
+				LCD_status=1;
+			}
+			if(RightPressed)
+			{
+				LCD_status = 1;
+			}
 			break;
 
 		case 0x07:
 			ClearScreen();
+			if(LCD_status)
+			{
 			LCDGotoXY(0, 0);
 			printg("Watering time\r\n");
 			LCDSendAString("Watering time"); // Watering time
+			LCD_status = 0;
+			}
+			if(LeftPressed)
+			{
+				LCD_status=1;
+			}
+			if(RightPressed)
+			{
+				LCD_status = 1;
+			}
 			break;
 
 		case 0x08:
 			ClearScreen();
+			if(LCD_status)
+			{
 			LCDGotoXY(0, 0);
 			printg("Moisture Start point\r\n");
 			LCDSendAString("Moisture Start point"); // Moisture start point
+		LCD_status=0;	
+		}
+			if(LeftPressed)
+			{
+				LCD_status=1;
+			}
+			if(RightPressed)
+			{
+				LCD_status = 1;
+			}
 			break;
 
 		case 0x09:
 			ClearScreen();
+			if(LCD_status)
+			{
 			LCDGotoXY(0, 0);
 			printg("Moisture stop point\r\n");
 			LCDSendAString("Moisture stop point"); // Moisture stop point
+			LCD_status=0;	
+		}
+			if(LeftPressed)
+			{
+				LCD_status=1;
+			}
+			if(RightPressed)
+			{
+				LCD_status = 1;
+			}
+
 			break;
 
 		case 0x0A:
 			ClearScreen();
+			if(LCD_status)
+			{
 			LCDGotoXY(0, 0);
 			printg("How often to test\r\n");
 			LCDSendAString("How often to test"); // How often to test
+			LCD_status=0;	
+		}
+			if(LeftPressed)
+			{
+				LCD_status=1;
+			}
+			if(RightPressed)
+			{
+				LCD_status = 1;
+			}
+
 			break;
 
 		default:
 			ClearScreen();
+			if(LCD_status)
+			{
 			LCDGotoXY(0, 0);
 			printg("No input\r\n");
 			LCDSendAString("No input"); // No input
+			LCD_status=0;	
+		}
+			if(LeftPressed)
+			{
+				LCD_status=1;
+			}
+			if(RightPressed)
+			{
+				LCD_status = 1;
+			}
+
 		}
 	}
 }
