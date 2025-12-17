@@ -5,34 +5,68 @@
  *      Author: gerdon
 
 
-Using push button to turn off and on led with ODR
-Key PA0
-LED PB2 APB2
+Using push button to update button state of buttons
+Key PB12 PB13 PB14
+
 */
 
 #include "exti.h"
 
-
-void PA0_exti_init(void)
+void PB12_exti_init(void)
 {
-	//Disable global interrupts
-	//Enable clock access for GPIO A
+	// Disable global interrupts
+	// Enable clock access for GPIO B
 	////////////enable clock access for syscfg
-	//select port a for exti
-	//unmask exti
-	//select rising or falling edge trigger
-	//enable exti in NVIC
-	//enable global interrupts
-
-
-	__disable_irq;					//Disable global interrupts
-	RCC->APB2ENR |=(1U<<2);			//Enable clock access for GPIO A
-
-		//enable clock access for syscfg
-		//select port a for exti
-		//unmask exti
-		//select rising or falling edge trigger
-		//enable exti in NVIC
-	__disable_irq;//enable global interrupts
+	// select port B for exti
+	// unmask exti
+	// select rising or falling edge trigger
+	// enable exti in NVIC
+	// enable global interrupts
+	__disable_irq;			   // Disable global interrupts
+	RCC->APB2ENR |= (1U << 3); // Enable clock to PB
+							   //  enable clock access for syscfg
+							   //  select port B for exti
+							   //  unmask exti
+							   //  select rising or falling edge trigger
+							   //  enable exti in NVIC
+	__disable_irq;			   // enable global interrupts
 }
 
+void PB13_exti_init(void)
+{
+	// Disable global interrupts
+	// Enable clock access for GPIO B
+	////////////enable clock access for syscfg
+	// select port B for exti
+	// unmask exti
+	// select rising or falling edge trigger
+	// enable exti in NVIC
+	// enable global interrupts
+	__disable_irq;			   // Disable global interrupts
+	RCC->APB2ENR |= (1U << 3); // Enable clock to PB
+							   //  enable clock access for syscfg
+							   //  select port B for exti
+							   //  unmask exti
+							   //  select rising or falling edge trigger
+							   //  enable exti in NVIC
+	__disable_irq;			   // enable global interrupts
+}
+void PB14_exti_init(void)
+{
+	// Disable global interrupts
+	// Enable clock access for GPIO B
+	////////////enable clock access for syscfg
+	// select port B for exti
+	// unmask exti
+	// select rising or falling edge trigger
+	// enable exti in NVIC
+	// enable global interrupts
+	__disable_irq;			   // Disable global interrupts
+	RCC->APB2ENR |= (1U << 3); // Enable clock to PB
+							   //  enable clock access for syscfg
+							   //  select port B for exti
+							   //  unmask exti
+							   //  select rising or falling edge trigger
+							   //  enable exti in NVIC
+	__disable_irq;			   // enable global interrupts
+}
