@@ -71,7 +71,6 @@ with systick being coretex-m peripheral references can be found in https://devel
 #include "LCD.h"
 #include "ADC.h"
 #include "trace.h"
-#include "exti.h"
 #include "SYSTICK.h"
 #include "Timer.h"
 
@@ -82,34 +81,6 @@ bool OkPressed;
 bool LeftPressed;
 bool RightPressed;
 uint16_t DTime = 10000; // delay time
-
-void EXTIPB12_IRQHandler(void)
-{
-	if (EXTI->PR & (1 << 0)) // Check pending flag
-	{
-		// Set button status
-
-		EXTI->PR |= (1 << 0); // Clear interrupt flag
-	}
-}
-void EXTIPB13_IRQHandler(void)
-{
-	if (EXTI->PR & (1 << 0)) // Check pending flag
-	{
-		// Set button status
-
-		EXTI->PR |= (1 << 0); // Clear interrupt flag
-	}
-}
-void EXTIPB14_IRQHandler(void)
-{
-	if (EXTI->PR & (1 << 0)) // Check pending flag
-	{
-		// Set button status
-
-		EXTI->PR |= (1 << 0); // Clear interrupt flag
-	}
-}
 
 void ReadButtons(void)
 {
@@ -147,34 +118,52 @@ int main(void)
 	ConfigureIO();
 	trace_init();
 	pa1_adc_init();
-	PB12_exti_init();
-	PB13_exti_init();
-	PB14_exti_init();
 
 	printg("Lettuice saver program\r\n");
 
 	while (1)
 	{
-		printg("ScreenStatus %x\r\n", ScreenStatus);
+		if (ScreenStatus != LastScreenStatus)
+		{
+			printg("ScreenStatus %x\r\n", ScreenStatus);
+			LastScreenStatus = ScreenStatus;
+		}
+
 		ReadButtons();
 
 		switch (ScreenStatus)
 		{
 		case 0x00:
 			ClearScreen(); // Clear the LCD screen
-			printg("Screen cleared\r\n");
+			if (ScreenStatus != LastScreenStatus)
+			{
+				printg("Screen cleared\r\n");
+				LastScreenStatus = ScreenStatus;
+			}
+
 			if (OkPressed | LeftPressed | RightPressed)
 			{
 				ScreenStatus = 0x01;
 			}
-			printg("ScreenStatus %x\r\n", ScreenStatus);
+
+			if (ScreenStatus != LastScreenStatus)
+			{
+				printg("Screen cleared\r\n");
+				LastScreenStatus = ScreenStatus;
+			}
 			break;
 
 		case 0x01:
 			ClearScreen();
-			LCDGotoXY(0, 0);
-			printg("Hello Allyson\r\n");
-			LCDSendAString("Hello Allyson"); // Hello screen
+
+			if (ScreenStatus != LastScreenStatus)
+			{
+				LCDGotoXY(0, 0);
+				printg("Hello Allyson\r\n");
+				LCDSendAString("Hello Allyson"); // Hello screen
+				LastScreenStatus = ScreenStatus;
+			}
+
 			if (OkPressed)
 			{
 				ScreenStatus = 0x02;
@@ -187,11 +176,16 @@ int main(void)
 
 		case 0x02:
 			ClearScreen();
-			LCDGotoXY(0, 0);
-			printg("Menu Press right to scrool\r\n");
-			LCDSendAString("Menu Press right"); // Stop the automated system
-			LCDGotoXY(1, 0);
-			LCDSendAString("to scrool ->");
+			if (ScreenStatus != LastScreenStatus)
+			{
+				LCDGotoXY(0, 0);
+				printg("Menu Press right to scrool\r\n");
+				LCDSendAString("Menu Press right"); // Stop the automated system
+				LCDGotoXY(1, 0);
+				LCDSendAString("to scrool ->");
+				LastScreenStatus = ScreenStatus;
+			}
+
 			if (RightPressed)
 			{
 				ScreenStatus = 0x03;
@@ -204,9 +198,14 @@ int main(void)
 
 		case 0x03:
 			ClearScreen();
-			LCDGotoXY(0, 0);
-			printg("Calibrate probe\r\n");
-			LCDSendAString("Calibrate probe"); // Start the automated system
+			if (ScreenStatus != LastScreenStatus)
+			{
+				LCDGotoXY(0, 0);
+				printg("Calibrate probe\r\n");
+				LCDSendAString("Calibrate probe"); // Start the automated system
+				LastScreenStatus = ScreenStatus;
+			}
+
 			if (RightPressed | OkPressed)
 			{
 				ScreenStatus = 0x04;
@@ -219,9 +218,14 @@ int main(void)
 
 		case 0x04:
 			ClearScreen();
-			LCDGotoXY(0, 0);
-			printg("Dry probe and press OK\r\n");
-			LCDSendAString("Dry probe and press OK"); // Calibration
+			if (ScreenStatus != LastScreenStatus)
+			{
+				LCDGotoXY(0, 0);
+				printg("Dry probe and press OK\r\n");
+				LCDSendAString("Dry probe and press OK"); // Calibration
+				LastScreenStatus = ScreenStatus;
+			}
+
 			if (OkPressed)
 			{
 				// Read analog input
@@ -236,9 +240,14 @@ int main(void)
 
 		case 0x05:
 			ClearScreen();
-			LCDGotoXY(0, 0);
-			printg("Wet probe and press OK\r\n");
-			LCDSendAString("Wet probe and press OK"); // Watering
+			if (ScreenStatus != LastScreenStatus)
+			{
+				LCDGotoXY(0, 0);
+				printg("Wet probe and press OK\r\n");
+				LCDSendAString("Wet probe and press OK"); // Watering
+				LastScreenStatus = ScreenStatus;
+			}
+
 			if (OkPressed)
 			{
 				// Read analog input

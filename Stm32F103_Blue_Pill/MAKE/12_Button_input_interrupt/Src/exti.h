@@ -10,4 +10,7 @@
 
 #include "stm32f103xb.h"
 
+void gpio_init(void);
+void exti0_init(void);
+
 #endif /* EXTI_H_ */
