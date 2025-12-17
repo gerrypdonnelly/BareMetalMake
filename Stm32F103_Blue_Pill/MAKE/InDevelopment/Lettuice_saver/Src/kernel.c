@@ -107,17 +107,16 @@ int main(void)
 
 	while (1)
 	{
-
 		ReadButtons();
 
 		switch (ScreenStatus)
 		{
 		case 0x00:
 			ClearScreen(); // Clear the LCD screen
-			if(LCD_status) 
+			if (LCD_status)
 			{
-			printg("Screen blanked\r\n");
-			LCD_status =0;
+				printg("Screen blanked\r\n");
+				LCD_status = 0;
 			}
 			if (OkPressed | LeftPressed | RightPressed)
 			{
@@ -129,17 +128,17 @@ int main(void)
 		case 0x01:
 			ClearScreen();
 			LCDGotoXY(0, 0);
-			if(LCD_status)
+			if (LCD_status)
 			{
-			printg("Hello Allyson\r\n");
-			LCDSendAString("Hello Allyson"); // Hello screen
-				LCD_status =0;
+				printg("Hello Allyson\r\n");
+				LCDSendAString("Hello Allyson"); // Hello screen
+				LCD_status = 0;
 			}
 			LastScreenStatus = ScreenStatus;
 			if (OkPressed)
 			{
 				ScreenStatus = 0x02;
-				LCD_status =1;
+				LCD_status = 1;
 			}
 			if (LeftPressed)
 			{
@@ -151,18 +150,18 @@ int main(void)
 		case 0x02:
 			ClearScreen();
 			LCDGotoXY(0, 0);
-			if(LCD_status)
+			if (LCD_status)
 			{
-			printg("Menu Press right to scrool\r\n");
-			LCDSendAString("Menu Press right"); // Stop the automated system
-			LCDGotoXY(1, 0);
-			LCDSendAString("to scrool ->");
-			LCD_status = 0;
+				printg("Menu Press right to scrool\r\n");
+				LCDSendAString("Menu Press right"); // Stop the automated system
+				LCDGotoXY(1, 0);
+				LCDSendAString("to scrool ->");
+				LCD_status = 0;
 			}
 			if (RightPressed)
 			{
-				ScreenStatus = 0x03;
-				LCD_status=1;
+				ScreenStatus = 0x10;
+				LCD_status = 1;
 			}
 			if (LeftPressed)
 			{
@@ -173,12 +172,12 @@ int main(void)
 
 		case 0x03:
 			ClearScreen();
-			if(LCD_status)
+			if (LCD_status)
 			{
-			LCDGotoXY(0, 0);
-			printg("Calibrate probe\r\n");
-			LCDSendAString("Calibrate probe"); // Start the automated system
-			LCD_status =0;
+				LCDGotoXY(0, 0);
+				printg("Calibrate probe\r\n");
+				LCDSendAString("Calibrate probe"); // Start the automated system
+				LCD_status = 0;
 			}
 			if (OkPressed)
 			{
@@ -199,12 +198,12 @@ int main(void)
 
 		case 0x04:
 			ClearScreen();
-			if(LCD_status)
+			if (LCD_status)
 			{
-			LCDGotoXY(0, 0);
-			printg("Dry probe and press OK\r\n");
-			LCDSendAString("Dry probe and press OK"); // Calibration
-			LCD_status = 0;
+				LCDGotoXY(0, 0);
+				printg("Dry probe and press OK\r\n");
+				LCDSendAString("Dry probe and press OK"); // Calibration
+				LCD_status = 0;
 			}
 			if (OkPressed)
 			{
@@ -222,145 +221,187 @@ int main(void)
 
 		case 0x05:
 			ClearScreen();
-			if(LCD_status)
+			if (LCD_status)
 			{
-			LCDGotoXY(0, 0);
-			printg("Wet probe and press OK\r\n");
-			LCDSendAString("Wet probe and press OK"); // Watering
-			LCD_status = 0;
+				LCDGotoXY(0, 0);
+				printg("Wet probe and press OK\r\n");
+				LCDSendAString("Wet probe and press OK"); // Watering
+				LCD_status = 0;
 			}
 			if (OkPressed)
 			{
 				// Read analog input
 				// Store value in memory
+				if (LCD_status)
+				{
+					printg("Probe calibrated\r\n");
+					LCDSendAString("Probe calibrated"); // Watering
+					LCD_status = 0;
+				}
 				for (int i = 0; i <= 10000; i++)
 					; // 5 seccond delay
-				printg("Probe calibrated\r\n");
-				LCDSendAString("Probe calibrated"); // Watering
 				ScreenStatus = 0x02;
 				LCD_status = 0;
-			}
-			if (LeftPressed)
-			{
-				ScreenStatus = 0x02;
-				LCD_status=1;
 			}
 			break;
 
 		case 0x06:
 			ClearScreen();
-			if(LCD_status)
+			if (LCD_status)
 			{
-			LCDGotoXY(0, 0);
-			printg("Settings\r\n");
-			LCDSendAString("Settings"); // Settings menu
-			LCD_status = 0;
+				LCDGotoXY(0, 0);
+				printg("Water trigger level\r\n");
+				LCDSendAString("Water trigger level"); // Settings menu
+				LCD_status = 0;
 			}
-			if(LeftPressed)
+			if (LeftPressed)
 			{
-				LCD_status=1;
+				ScreenStatus = 0x03;
+				LCD_status = 1;
 			}
-			if(RightPressed)
+			if (RightPressed)
 			{
+				ScreenStatus = 0x07;
+				LCD_status = 1;
+			}
+			if(OkPressed)
+			{
+				//Set water trigger level
 				LCD_status = 1;
 			}
 			break;
 
 		case 0x07:
 			ClearScreen();
-			if(LCD_status)
+			if (LCD_status)
 			{
-			LCDGotoXY(0, 0);
-			printg("Watering time\r\n");
-			LCDSendAString("Watering time"); // Watering time
-			LCD_status = 0;
+				LCDGotoXY(0, 0);
+				printg("Watering time\r\n");
+				LCDSendAString("Watering time"); // Watering time
+				LCD_status = 0;
 			}
-			if(LeftPressed)
+			if (LeftPressed)
 			{
-				LCD_status=1;
+				ScreenStatus = 0x06;
+				LCD_status = 1;
 			}
-			if(RightPressed)
+			if (RightPressed)
 			{
 				LCD_status = 1;
 			}
 			break;
 
-		case 0x08:
+		case 0x10:
 			ClearScreen();
-			if(LCD_status)
+			if (LCD_status)
 			{
-			LCDGotoXY(0, 0);
-			printg("Moisture Start point\r\n");
-			LCDSendAString("Moisture Start point"); // Moisture start point
-		LCD_status=0;	
-		}
-			if(LeftPressed)
-			{
-				LCD_status=1;
+				LCDGotoXY(0, 0);
+				printg("Stop\r\n");
+				LCDSendAString("Stop"); // No input
+				LCD_status = 0;
 			}
-			if(RightPressed)
+			if (LeftPressed)
 			{
+				ScreenStatus = 0x02;
+				LCD_status = 1;
+			}
+			if (RightPressed)
+			{
+				ScreenStatus = 0x11;
+				LCD_status = 1;
+			}
+			if (OkPressed)
+			{
+				// Turn off automation
+				// Stop pump
 				LCD_status = 1;
 			}
 			break;
 
-		case 0x09:
+		case 0x11:
 			ClearScreen();
-			if(LCD_status)
+			if (LCD_status)
 			{
-			LCDGotoXY(0, 0);
-			printg("Moisture stop point\r\n");
-			LCDSendAString("Moisture stop point"); // Moisture stop point
-			LCD_status=0;	
-		}
-			if(LeftPressed)
-			{
-				LCD_status=1;
+				LCDGotoXY(0, 0);
+				printg("Start Automation\r\n");
+				LCDSendAString("Start Automation");
+				LCD_status = 0;
 			}
-			if(RightPressed)
+			if (LeftPressed)
 			{
+				ScreenStatus = 0x10;
 				LCD_status = 1;
 			}
-
+			if (RightPressed)
+			{
+				ScreenStatus = 0x12;
+				LCD_status = 1;
+			}
+			if (OkPressed)
+			{
+				// Start automation
+				LCD_status = 1;
+			}
 			break;
 
-		case 0x0A:
+		case 0x12:
 			ClearScreen();
-			if(LCD_status)
+			if (LCD_status)
 			{
-			LCDGotoXY(0, 0);
-			printg("How often to test\r\n");
-			LCDSendAString("How often to test"); // How often to test
-			LCD_status=0;	
-		}
-			if(LeftPressed)
-			{
-				LCD_status=1;
+				LCDGotoXY(0, 0);
+				printg("Water on\r\n");
+				LCDSendAString("Water on"); // No input
+				LCD_status = 0;
 			}
-			if(RightPressed)
+			if (LeftPressed)
 			{
+				ScreenStatus = 0x11;
 				LCD_status = 1;
 			}
-
+			if (RightPressed)
+			{
+				ScreenStatus = 0x13;
+				LCD_status = 1;
+			}
+			if(OkPressed)
+			{
+				/*
+				while(ok pressed)
+				{
+					//turn om pump
+				}
+				//Turn off pump
+				*/
+				ScreenStatus = 0x02;
+			}
 			break;
 
-		default:
+		case 0x13:
 			ClearScreen();
-			if(LCD_status)
+			if (LCD_status)
 			{
-			LCDGotoXY(0, 0);
-			printg("No input\r\n");
-			LCDSendAString("No input"); // No input
-			LCD_status=0;	
-		}
-			if(LeftPressed)
-			{
-				LCD_status=1;
+				LCDGotoXY(0, 0);
+				printg("Settings\r\n");
+				LCDSendAString("Settings"); 
+				LCD_status = 0;
 			}
-			if(RightPressed)
+			if (LeftPressed)
 			{
+				ScreenStatus = 0x12;
 				LCD_status = 1;
 			}
+			if (RightPressed)
+			{
+				ScreenStatus = 0x10;
+				LCD_status = 1;
+			}
+			if(OkPressed)
+			{
+				ScreenStatus = 0x03;
+				LCD_status = 1;
+			}
+			break;
+
 
 		}
 	}
