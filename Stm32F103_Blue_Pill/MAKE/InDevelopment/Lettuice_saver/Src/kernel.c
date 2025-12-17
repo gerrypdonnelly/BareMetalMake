@@ -70,7 +70,8 @@ void ReadButtons(void)
 	if (GPIOB->IDR & (1U << 12))
 	{
 		LeftPressed = 1;
-		printg("Left button pressed\r\n");
+		//printg("Left button pressed\r\n");
+	
 	}
 	else
 	{
@@ -79,7 +80,8 @@ void ReadButtons(void)
 	if (GPIOB->IDR & (1U << 13))
 	{
 		RightPressed = 1;
-		printg("Right button pressed\r\n");
+		//printg("Right button pressed\r\n");
+	
 	}
 	else
 	{
@@ -88,13 +90,17 @@ void ReadButtons(void)
 	if (GPIOB->IDR & (1U << 14))
 	{
 		OkPressed = 1;
-		printg("Ok button pressed\r\n");
+		//printg("Ok button pressed\r\n");
+		
 	}
 	else
 	{
 		OkPressed = 0;
 	}
 }
+
+
+
 
 int main(void)
 {
@@ -103,7 +109,7 @@ int main(void)
 	trace_init();
 	pa1_adc_init();
 
-	printg("Lettuice saver program\r\n");
+	//printg("Lettuice saver program\r\n");
 
 	while (1)
 	{
@@ -115,7 +121,7 @@ int main(void)
 			ClearScreen(); // Clear the LCD screen
 			if (LCD_status)
 			{
-				printg("Screen blanked\r\n");
+				printg("Screen blank\r\n");
 				LCD_status = 0;
 			}
 			if (OkPressed | LeftPressed | RightPressed)
@@ -190,7 +196,8 @@ int main(void)
 				LCD_status = 1;
 			}
 			if (RightPressed)
-			{
+			{ScreenStatus = 0x06;
+
 				// go to next menu
 				LCD_status = 1;
 			}
@@ -230,18 +237,18 @@ int main(void)
 			}
 			if (OkPressed)
 			{
+				LCD_status = 1;
 				// Read analog input
 				// Store value in memory
 				if (LCD_status)
 				{
 					printg("Probe calibrated\r\n");
 					LCDSendAString("Probe calibrated"); // Watering
+					ScreenStatus = 0x02;
 					LCD_status = 0;
+					//wait for ok press
 				}
-				for (int i = 0; i <= 10000; i++)
-					; // 5 seccond delay
-				ScreenStatus = 0x02;
-				LCD_status = 0;
+
 			}
 			break;
 
