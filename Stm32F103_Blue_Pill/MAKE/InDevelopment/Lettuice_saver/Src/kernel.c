@@ -43,26 +43,8 @@ LCD_Rw		B9	--|			|--C15
 			G	--|			|--C13
 			3v3	--|_________|--VB
 
+***************************************************************************/
 
-Systick timer is a 24 bit register that counts don from FFFF to 0000
-SYST_CVR Systick current value register // contains the current value
-SYST_CSR Systick Control and status register configure the clock source and enable disable
-SYST_RVR this is where the initial count value is placed
-SYST_CALIB
-
-Compute the delay achoeved by loading 10 in the systick reload value register STRVR given system clock 8MHz
-Systick->LOAD = 9 starting from 0
-1 second executes 8000000 cycles then 1 cycle 1/8000000 = 1.25x10exp-7 == 125x10exp-9s  or 125 ns for 1 second delay
-for 10 cycles/seconds 1250ns
-So loading STRVR with 9 would give us 1250ns delay
-
-1ms = 0.001s
-delay = N/Sysclk
-n=.001x8000000
-n= 8000 for 1 ms
-with systick being coretex-m peripheral references can be found in https://developer.arm.com/documentation/dui0553/latest
- ******************************************************************************
- */
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -123,11 +105,6 @@ int main(void)
 
 	while (1)
 	{
-		if (ScreenStatus != LastScreenStatus)
-		{
-			printg("ScreenStatus %x\r\n", ScreenStatus);
-			LastScreenStatus = ScreenStatus;
-		}
 
 		ReadButtons();
 
@@ -135,35 +112,19 @@ int main(void)
 		{
 		case 0x00:
 			ClearScreen(); // Clear the LCD screen
-			if (ScreenStatus != LastScreenStatus)
-			{
-				printg("Screen cleared\r\n");
-				LastScreenStatus = ScreenStatus;
-			}
-
+			printg("Screen blanked\r\n");
 			if (OkPressed | LeftPressed | RightPressed)
 			{
 				ScreenStatus = 0x01;
-			}
-
-			if (ScreenStatus != LastScreenStatus)
-			{
-				printg("Screen cleared\r\n");
-				LastScreenStatus = ScreenStatus;
 			}
 			break;
 
 		case 0x01:
 			ClearScreen();
-
-			if (ScreenStatus != LastScreenStatus)
-			{
-				LCDGotoXY(0, 0);
-				printg("Hello Allyson\r\n");
-				LCDSendAString("Hello Allyson"); // Hello screen
-				LastScreenStatus = ScreenStatus;
-			}
-
+			LCDGotoXY(0, 0);
+			printg("Hello Allyson\r\n");
+			LCDSendAString("Hello Allyson"); // Hello screen
+			LastScreenStatus = ScreenStatus;
 			if (OkPressed)
 			{
 				ScreenStatus = 0x02;
@@ -176,39 +137,15 @@ int main(void)
 
 		case 0x02:
 			ClearScreen();
-			if (ScreenStatus != LastScreenStatus)
-			{
-				LCDGotoXY(0, 0);
-				printg("Menu Press right to scrool\r\n");
-				LCDSendAString("Menu Press right"); // Stop the automated system
-				LCDGotoXY(1, 0);
-				LCDSendAString("to scrool ->");
-				LastScreenStatus = ScreenStatus;
-			}
-
+			LCDGotoXY(0, 0);
+			printg("Menu Press right to scrool\r\n");
+			LCDSendAString("Menu Press right"); // Stop the automated system
+			LCDGotoXY(1, 0);
+			LCDSendAString("to scrool ->");
+			LastScreenStatus = ScreenStatus;
 			if (RightPressed)
 			{
 				ScreenStatus = 0x03;
-			}
-			if (LeftPressed)
-			{
-				ScreenStatus = 0x00;
-			}
-			break;
-
-		case 0x03:
-			ClearScreen();
-			if (ScreenStatus != LastScreenStatus)
-			{
-				LCDGotoXY(0, 0);
-				printg("Calibrate probe\r\n");
-				LCDSendAString("Calibrate probe"); // Start the automated system
-				LastScreenStatus = ScreenStatus;
-			}
-
-			if (RightPressed | OkPressed)
-			{
-				ScreenStatus = 0x04;
 			}
 			if (LeftPressed)
 			{
@@ -216,16 +153,32 @@ int main(void)
 			}
 			break;
 
+		case 0x03:
+			ClearScreen();
+			LCDGotoXY(0, 0);
+			printg("Calibrate probe\r\n");
+			LCDSendAString("Calibrate probe"); // Start the automated system
+			LastScreenStatus = ScreenStatus;
+			if (OkPressed)
+			{
+				ScreenStatus = 0x04;
+			}
+			if (LeftPressed)
+			{
+				ScreenStatus = 0x02;
+			}
+			if (RightPressed)
+			{
+				// go to next menu
+			}
+			break;
+
 		case 0x04:
 			ClearScreen();
-			if (ScreenStatus != LastScreenStatus)
-			{
-				LCDGotoXY(0, 0);
-				printg("Dry probe and press OK\r\n");
-				LCDSendAString("Dry probe and press OK"); // Calibration
-				LastScreenStatus = ScreenStatus;
-			}
-
+			LCDGotoXY(0, 0);
+			printg("Dry probe and press OK\r\n");
+			LCDSendAString("Dry probe and press OK"); // Calibration
+			LastScreenStatus = ScreenStatus;
 			if (OkPressed)
 			{
 				// Read analog input
@@ -234,20 +187,16 @@ int main(void)
 			}
 			if (LeftPressed)
 			{
-				ScreenStatus = 0x00;
+				ScreenStatus = 0x02;
 			}
 			break;
 
 		case 0x05:
 			ClearScreen();
-			if (ScreenStatus != LastScreenStatus)
-			{
-				LCDGotoXY(0, 0);
-				printg("Wet probe and press OK\r\n");
-				LCDSendAString("Wet probe and press OK"); // Watering
-				LastScreenStatus = ScreenStatus;
-			}
-
+			LCDGotoXY(0, 0);
+			printg("Wet probe and press OK\r\n");
+			LCDSendAString("Wet probe and press OK"); // Watering
+			LastScreenStatus = ScreenStatus;
 			if (OkPressed)
 			{
 				// Read analog input
@@ -260,7 +209,7 @@ int main(void)
 			}
 			if (LeftPressed)
 			{
-				ScreenStatus = 0x00;
+				ScreenStatus = 0x02;
 			}
 			break;
 
@@ -307,18 +256,3 @@ int main(void)
 		}
 	}
 }
-
-/*Tim3_PB0_output_compare();
-	printg("Main loop\r\n");
-	Tim4_PB9_input_capture();
-
-	while (1)
-	{
-		// wait until edge is captured
-		while ((TIM4->SR & SR_CC4IF))
-		{
-		}
-		// read the captured counter value
-		timestamp = TIM4->CCR4;
-	}
-*/
