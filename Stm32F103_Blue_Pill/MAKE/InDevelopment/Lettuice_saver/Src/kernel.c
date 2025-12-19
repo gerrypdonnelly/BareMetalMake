@@ -65,6 +65,14 @@ volatile bool RightPressed;
 volatile bool LCD_status;
 uint16_t DTime = 10000; // delay time
 
+void Update_delay(void)
+{
+for (volatile int i = 0; i < 1000000; i++)
+            ; // Simple delay
+}
+
+
+
 void ReadButtons(void)
 {
 	if (GPIOB->IDR & (1U << 12))
@@ -108,6 +116,8 @@ int main(void)
 	ConfigureIO();
 	trace_init();
 	pa1_adc_init();
+	LCD_init();
+	InitializeLCD();
 
 	//printg("Lettuice saver program\r\n");
 
@@ -118,9 +128,12 @@ int main(void)
 		switch (ScreenStatus)
 		{
 		case 0x00:
-			ClearScreen(); // Clear the LCD screen
 			if (LCD_status)
 			{
+				ClearScreen();
+				Update_delay();
+				LCDGotoXY(1,1);
+				LCDSendAString("Hello");
 				printg("Screen blank\r\n");
 				LCD_status = 0;
 			}
@@ -132,10 +145,13 @@ int main(void)
 			break;
 
 		case 0x01:
-			ClearScreen();
-			LCDGotoXY(0, 0);
+			
+			LCDGotoXY(1, 1);
 			if (LCD_status)
 			{
+				ClearScreen();
+				Update_delay();
+				LCDGotoXY(1,1);
 				printg("Hello Allyson\r\n");
 				LCDSendAString("Hello Allyson"); // Hello screen
 				LCD_status = 0;
@@ -155,12 +171,14 @@ int main(void)
 
 		case 0x02:
 			ClearScreen();
-			LCDGotoXY(0, 0);
+			Update_delay();
+			LCDGotoXY(1,1);
 			if (LCD_status)
 			{
 				printg("Menu Press right to scrool\r\n");
 				LCDSendAString("Menu Press right"); // Stop the automated system
-				LCDGotoXY(1, 0);
+				//Update_delay();
+				LCDGotoXY(2, 1);
 				LCDSendAString("to scrool ->");
 				LCD_status = 0;
 			}
@@ -177,10 +195,10 @@ int main(void)
 			break;
 
 		case 0x03:
-			ClearScreen();
+			//ClearScreen();
 			if (LCD_status)
 			{
-				LCDGotoXY(0, 0);
+				LCDGotoXY(1, 1);
 				printg("Calibrate probe\r\n");
 				LCDSendAString("Calibrate probe"); // Start the automated system
 				LCD_status = 0;
@@ -204,10 +222,10 @@ int main(void)
 			break;
 
 		case 0x04:
-			ClearScreen();
+			//ClearScreen();
 			if (LCD_status)
 			{
-				LCDGotoXY(0, 0);
+				LCDGotoXY(1, 1);
 				printg("Dry probe and press OK\r\n");
 				LCDSendAString("Dry probe and press OK"); // Calibration
 				LCD_status = 0;
@@ -227,10 +245,10 @@ int main(void)
 			break;
 
 		case 0x05:
-			ClearScreen();
+			//ClearScreen();
 			if (LCD_status)
 			{
-				LCDGotoXY(0, 0);
+				LCDGotoXY(1, 1);
 				printg("Wet probe and press OK\r\n");
 				LCDSendAString("Wet probe and press OK"); // Watering
 				LCD_status = 0;
@@ -243,6 +261,7 @@ int main(void)
 				if (LCD_status)
 				{
 					printg("Probe calibrated\r\n");
+					LCDGotoXY(1,1);
 					LCDSendAString("Probe calibrated"); // Watering
 					ScreenStatus = 0x02;
 					LCD_status = 0;
@@ -253,10 +272,10 @@ int main(void)
 			break;
 
 		case 0x06:
-			ClearScreen();
+			//ClearScreen();
 			if (LCD_status)
 			{
-				LCDGotoXY(0, 0);
+				LCDGotoXY(1, 1);
 				printg("Water trigger level\r\n");
 				LCDSendAString("Water trigger level"); // Settings menu
 				LCD_status = 0;
@@ -279,10 +298,10 @@ int main(void)
 			break;
 
 		case 0x07:
-			ClearScreen();
+			//ClearScreen();
 			if (LCD_status)
 			{
-				LCDGotoXY(0, 0);
+				LCDGotoXY(1, 1);
 				printg("Watering time\r\n");
 				LCDSendAString("Watering time"); // Watering time
 				LCD_status = 0;
@@ -299,10 +318,10 @@ int main(void)
 			break;
 
 		case 0x10:
-			ClearScreen();
+			//ClearScreen();
 			if (LCD_status)
 			{
-				LCDGotoXY(0, 0);
+				LCDGotoXY(1, 1);
 				printg("Stop\r\n");
 				LCDSendAString("Stop"); // No input
 				LCD_status = 0;
@@ -326,10 +345,10 @@ int main(void)
 			break;
 
 		case 0x11:
-			ClearScreen();
+			//ClearScreen();
 			if (LCD_status)
 			{
-				LCDGotoXY(0, 0);
+				LCDGotoXY(1, 1);
 				printg("Start Automation\r\n");
 				LCDSendAString("Start Automation");
 				LCD_status = 0;
@@ -352,10 +371,10 @@ int main(void)
 			break;
 
 		case 0x12:
-			ClearScreen();
+			//ClearScreen();
 			if (LCD_status)
 			{
-				LCDGotoXY(0, 0);
+				LCDGotoXY(1, 1);
 				printg("Water on\r\n");
 				LCDSendAString("Water on"); // No input
 				LCD_status = 0;
@@ -384,10 +403,10 @@ int main(void)
 			break;
 
 		case 0x13:
-			ClearScreen();
+			//ClearScreen();
 			if (LCD_status)
 			{
-				LCDGotoXY(0, 0);
+				LCDGotoXY(1, 1);
 				printg("Settings\r\n");
 				LCDSendAString("Settings"); 
 				LCD_status = 0;
