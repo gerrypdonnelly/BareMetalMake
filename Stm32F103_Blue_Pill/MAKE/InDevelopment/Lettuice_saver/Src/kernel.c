@@ -67,7 +67,7 @@ uint16_t DTime = 10000; // delay time
 
 void Update_delay(void)
 {
-	for (volatile int i = 0; i < 10000000; i++)
+	for (volatile int i = 0; i < 1000000; i++)
 		; // Simple delay
 }
 void ClearButtons(void)
@@ -138,6 +138,10 @@ int main(void)
 				ScreenStatus = 0x01;
 				RunOnce = 1;
 			}
+			else
+			{
+				ClearButtons();
+			}
 			break;
 
 		case 0x01:
@@ -169,7 +173,7 @@ int main(void)
 			{
 				ClearScreen();
 				LCDGotoXY(1, 1);
-				printg("Menu Press right to scrool\r\n");
+				printg("Menu Press right to scroll+\r\n");
 				LCDSendAString("Menu Press right"); // Stop the automated system
 				LCDGotoXY(2, 1);
 				LCDSendAString("to scrool ->");
@@ -197,6 +201,7 @@ int main(void)
 				printg("Calibrate probe\r\n");
 				LCDSendAString("Calibrate probe"); // Start the automated system
 				RunOnce = 0;
+				ClearButtons();
 			}
 			if (OkPressed)
 			{
@@ -357,6 +362,7 @@ int main(void)
 				printg("Stop\r\n");
 				LCDSendAString("Stop"); // No input
 				RunOnce = 0;
+				ClearButtons();
 			}
 			if (LeftPressed)
 			{
@@ -366,17 +372,15 @@ int main(void)
 			}
 			if (RightPressed)
 			{
-				ClearButtons();
 				ScreenStatus = 0x11;
 				RunOnce = 1;
+				ClearButtons();
 			}
 			if (OkPressed)
 			{
-				ClearButtons();
 				// Turn off automation
 				// Stop pump
-				if (RunOnce)
-				{
+				
 					Update_delay();
 					ClearScreen();
 					LCDGotoXY(1, 1);
@@ -384,7 +388,8 @@ int main(void)
 					RunOnce = 1;
 					Update_delay();
 					ScreenStatus = 0x02;
-				}
+					ClearButtons();
+				
 			}
 			break;
 
@@ -396,6 +401,7 @@ int main(void)
 				printg("Start Automation\r\n");
 				LCDSendAString("Start Automation");
 				RunOnce = 0;
+				ClearButtons();
 			}
 			if (LeftPressed)
 			{
@@ -411,17 +417,17 @@ int main(void)
 			}
 			if (OkPressed)
 			{
-				ClearButtons();
-				if (RunOnce)
-				{
+				//if probe calibrated
+				//if trigger set
+				//then turn on auto
 					Update_delay();
 					ClearScreen();
 					LCDGotoXY(1, 1);
-					LCDSendAString("System on automatic");
+					LCDSendAString("System on auto");
 					RunOnce = 1;
 					Update_delay();
 					ScreenStatus = 0x02;
-				}
+					ClearButtons();
 			}
 			break;
 
@@ -432,9 +438,8 @@ int main(void)
 				LCDGotoXY(1, 1);
 				printg("Hold OK to water\r\n");
 				LCDSendAString("Hold ok to water"); // No input
-				LCDGotoXY(2, 1);
-				LCDSendAString("Manual wattering");
 				RunOnce = 0;
+				ClearButtons();
 			}
 			if (LeftPressed)
 			{
@@ -471,6 +476,7 @@ int main(void)
 				printg("Settings\r\n");
 				LCDSendAString("Settings");
 				RunOnce = 0;
+				ClearButtons();
 			}
 			if (LeftPressed)
 			{
