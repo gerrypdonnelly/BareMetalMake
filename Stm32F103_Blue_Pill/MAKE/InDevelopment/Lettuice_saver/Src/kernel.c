@@ -293,6 +293,7 @@ int main(void)
 				printg("Water trigger level\r\n");
 				LCDSendAString("Water trigger level"); // Settings menu
 				RunOnce = 0;
+				ClearButtons();
 			}
 			if (LeftPressed)
 			{
@@ -310,16 +311,15 @@ int main(void)
 			{
 				ClearButtons();
 				// Set water trigger level
-				if (RunOnce)
-				{
 					Update_delay();
 					ClearScreen();
 					LCDGotoXY(1, 1);
 					LCDSendAString("Water trigger set");
 					RunOnce = 1;
 					Update_delay();
+					ClearScreen();
 					ScreenStatus = 0x02;
-				}
+				
 			}
 			break;
 
@@ -331,6 +331,7 @@ int main(void)
 				printg("Watering time\r\n");
 				LCDSendAString("Watering time"); // Watering time
 				RunOnce = 0;
+				ClearButtons();
 			}
 			if (LeftPressed)
 			{
@@ -341,16 +342,20 @@ int main(void)
 			if (OkPressed)
 			{
 				ClearButtons();
-				if (RunOnce)
-				{
-					Update_delay();
-					ClearScreen();
-					LCDGotoXY(1, 1);
-					LCDSendAString("Water trigger set");
-					RunOnce = 1;
-					Update_delay();
-					ScreenStatus = 0x02;
-				}
+				Update_delay();
+				ClearScreen();
+				LCDGotoXY(1, 1);
+				LCDSendAString("Water trigger set");
+				RunOnce = 1;
+				Update_delay();
+				ScreenStatus = 0x02;
+			}
+			if(RightPressed)
+			{
+				ClearButtons();
+				RunOnce = 1;
+				ScreenStatus = 0x03;
+
 			}
 			break;
 
