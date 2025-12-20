@@ -117,7 +117,7 @@ int main(void)
 	LCD_init();
 	InitializeLCD();
 
-	// printg("Lettuice saver program\r\n");
+	// printg("Lettuce saver program\r\n");
 
 	while (1)
 	{
