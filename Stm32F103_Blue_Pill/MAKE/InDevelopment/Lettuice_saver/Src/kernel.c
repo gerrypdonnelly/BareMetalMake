@@ -244,9 +244,7 @@ int main(void)
 				RunOnce = 1;
 			}
 			break;
-
 		case 0x05:
-
 			if (RunOnce)
 			{
 				ClearScreen();
