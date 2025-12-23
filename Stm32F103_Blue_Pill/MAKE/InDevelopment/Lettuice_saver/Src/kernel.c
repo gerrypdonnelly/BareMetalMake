@@ -71,6 +71,8 @@ volatile int RightReleasedConfidenceLevel = 0;
 volatile int OkPressedConfidenceLevel = 0;
 volatile int OkReleasedConfidenceLevel = 0;
 volatile int ConfidenceLevel = 500;
+volatile uint16_t ProbeValue = 0;
+volatile int AutoMode = 0;
 
 void Update_delay(void)
 {
@@ -230,7 +232,8 @@ int main(void)
 			if (RunOnce)
 			{
 				ClearScreen();
-				printg("Screen blank\r\n");
+				LCDGotoXY(1,1);
+				LCDSendAString("Plant Watering system");
 				RunOnce = 0;
 				ClearButtons();
 			}
@@ -251,7 +254,6 @@ int main(void)
 			{
 				ClearScreen();
 				LCDGotoXY(1, 1);
-				printg("Hello Allyson\r\n");
 				LCDSendAString("Hello Allyson"); // Hello screen
 				RunOnce = 0;
 				ClearButtons();
@@ -272,7 +274,6 @@ int main(void)
 			{
 				ClearScreen();
 				LCDGotoXY(1, 1);
-				printg("Menu Press right to scroll+\r\n");
 				LCDSendAString("Menu Press right"); // Stop the automated system
 				LCDGotoXY(2, 1);
 				LCDSendAString("to scrool ->");
@@ -295,7 +296,6 @@ int main(void)
 			{
 				ClearScreen();
 				LCDGotoXY(1, 1);
-				printg("Calibrate probe\r\n");
 				LCDSendAString("Calibrate probe"); // Start the automated system
 				RunOnce = 0;
 				ClearButtons();
@@ -324,7 +324,6 @@ int main(void)
 			{
 				ClearScreen();
 				LCDGotoXY(1, 1);
-				printg("Dry probe and press OK\r\n");
 				LCDSendAString("Dry probe"); // Calibration
 				LCDGotoXY(2, 1);
 				LCDSendAString("and press ok");
@@ -367,6 +366,7 @@ int main(void)
 			{
 				ClearButtons();
 				// Read analog input
+				ProbeValue = adc_read();
 				// Store value in memory
 				ClearScreen();
 				LCDGotoXY(1, 1);
@@ -377,7 +377,6 @@ int main(void)
 				ClearScreen();
 				ScreenStatus = 0x03;
 				RunOnce = 1;
-				// wait for ok press
 			}
 			if (LeftPressed)
 			{
@@ -386,7 +385,6 @@ int main(void)
 				RunOnce = 1;
 			}
 			break;
-
 		case 0x06:
 			if (RunOnce)
 			{
@@ -425,7 +423,6 @@ int main(void)
 				RunOnce = 1;
 			}
 			break;
-
 		case 0x07:
 			if (RunOnce)
 			{
@@ -462,7 +459,6 @@ int main(void)
 				ScreenStatus = 0x03;
 			}
 			break;
-
 		case 0x10:
 			if (RunOnce)
 			{
@@ -488,8 +484,9 @@ int main(void)
 			if (OkPressed)
 			{
 				// Turn off automation
+				AutoMode = 0;
 				// Stop pump
-
+				GPIOB->ODR &= ~(1U<<15);
 				Update_delay();
 				ClearScreen();
 				LCDGotoXY(1, 1);
@@ -500,7 +497,6 @@ int main(void)
 				ClearButtons();
 			}
 			break;
-
 		case 0x11:
 			if (RunOnce)
 			{
@@ -525,7 +521,7 @@ int main(void)
 			}
 			if (OkPressed)
 			{
-				// if probe calibrated
+				// if probes calibrated
 				// if trigger set
 				// then turn on auto
 				Update_delay();
@@ -538,7 +534,6 @@ int main(void)
 				ClearButtons();
 			}
 			break;
-
 		case 0x12:
 			if (RunOnce)
 			{
@@ -564,7 +559,6 @@ int main(void)
 			if (OkPressed)
 			{
 				ClearButtons();
-				// Update_delay();
 				ClearScreen();
 				LCDGotoXY(1, 5);
 				LCDSendAString("Watering");
@@ -580,7 +574,6 @@ int main(void)
 				ScreenStatus = 0x12;
 			}
 			break;
-
 		case 0x13:
 			if (RunOnce)
 			{
