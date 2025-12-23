@@ -62,7 +62,7 @@ uint16_t LastScreenStatus = 0x00;
 volatile bool OkPressed;
 volatile bool LeftPressed;
 volatile bool RightPressed;
-volatile bool RunOnce;
+volatile bool RunOnce = 1;
 uint16_t DTime = 10000; // delay time
 
 void Update_delay(void)
@@ -82,7 +82,6 @@ void ReadButtons(void)
 	if (GPIOB->IDR & (1U << 12))
 	{
 		LeftPressed = 1;
-		// printg("Left button pressed\r\n");
 	}
 	else
 	{
@@ -91,7 +90,6 @@ void ReadButtons(void)
 	if (GPIOB->IDR & (1U << 13))
 	{
 		RightPressed = 1;
-		// printg("Right button pressed\r\n");
 	}
 	else
 	{
@@ -100,7 +98,6 @@ void ReadButtons(void)
 	if (GPIOB->IDR & (1U << 14))
 	{
 		OkPressed = 1;
-		// printg("Ok button pressed\r\n");
 	}
 	else
 	{
@@ -110,14 +107,11 @@ void ReadButtons(void)
 
 int main(void)
 {
-	RunOnce = 1;
 	ConfigureIO();
 	trace_init();
 	pa1_adc_init();
 	LCD_init();
 	InitializeLCD();
-
-	// printg("Lettuice saver program\r\n");
 
 	while (1)
 	{
@@ -154,8 +148,6 @@ int main(void)
 				RunOnce = 0;
 				ClearButtons();
 			}
-
-			LastScreenStatus = ScreenStatus;
 			if (OkPressed)
 			{
 				ScreenStatus = 0x02;
@@ -167,7 +159,6 @@ int main(void)
 				RunOnce = 1;
 			}
 			break;
-
 		case 0x02:
 			if (RunOnce)
 			{
@@ -180,7 +171,6 @@ int main(void)
 				RunOnce = 0;
 				ClearButtons();
 			}
-
 			if (RightPressed)
 			{
 				ScreenStatus = 0x10;
@@ -192,7 +182,6 @@ int main(void)
 				RunOnce = 1;
 			}
 			break;
-
 		case 0x03:
 			if (RunOnce)
 			{
@@ -212,19 +201,16 @@ int main(void)
 			if (LeftPressed)
 			{
 				ClearButtons();
-				ScreenStatus = 0x02;
+				ScreenStatus = 0x13;
 				RunOnce = 1;
 			}
 			if (RightPressed)
 			{
 				ClearButtons();
 				ScreenStatus = 0x06;
-
-				// go to next menu
 				RunOnce = 1;
 			}
 			break;
-
 		case 0x04:
 			if (RunOnce)
 			{
@@ -235,19 +221,26 @@ int main(void)
 				LCDGotoXY(2, 1);
 				LCDSendAString("and press ok");
 				RunOnce = 0;
+				ClearButtons();
 			}
 			if (OkPressed)
 			{
 				ClearButtons();
 				// Read analog input
 				// Store value in memory
+				ClearScreen();
+				LCDGotoXY(1, 1);
+				LCDSendAString("Dry probe");
+				LCDGotoXY(2, 4);
+				LCDSendAString("Calibrated");
+				Update_delay();
 				ScreenStatus = 0x05;
 				RunOnce = 1;
 			}
 			if (LeftPressed)
 			{
 				ClearButtons();
-				ScreenStatus = 0x02;
+				ScreenStatus = 0x03;
 				RunOnce = 1;
 			}
 			break;
@@ -267,21 +260,24 @@ int main(void)
 			if (OkPressed)
 			{
 				ClearButtons();
-				RunOnce = 1;
 				// Read analog input
 				// Store value in memory
-				if (RunOnce)
-				{
-					printg("Probe calibrated\r\n");
-					ClearScreen();
-					LCDGotoXY(1, 1);
-					Update_delay();
-					LCDSendAString("Probe calibrated"); // Watering
-					Update_delay();
-					ScreenStatus = 0x02;
-					RunOnce = 0;
-					// wait for ok press
-				}
+				ClearScreen();
+				LCDGotoXY(1, 1);
+				LCDSendAString("Wet probe");
+				LCDGotoXY(2, 4);
+				LCDSendAString("Calibrated");
+				Update_delay();
+				ClearScreen();
+				ScreenStatus = 0x03;
+				RunOnce = 1;
+				// wait for ok press
+			}
+			if (LeftPressed)
+			{
+				ClearButtons();
+				ScreenStatus = 0x03;
+				RunOnce = 1;
 			}
 			break;
 
@@ -290,8 +286,8 @@ int main(void)
 			{
 				ClearScreen();
 				LCDGotoXY(1, 1);
-				printg("Water trigger level\r\n");
-				LCDSendAString("Water trigger level"); // Settings menu
+				printg("Moisture trigger\r\n");
+				LCDSendAString("Moisture trigger"); // Settings menu
 				RunOnce = 0;
 				ClearButtons();
 			}
@@ -311,15 +307,16 @@ int main(void)
 			{
 				ClearButtons();
 				// Set water trigger level
-					Update_delay();
-					ClearScreen();
-					LCDGotoXY(1, 1);
-					LCDSendAString("Water trigger set");
-					RunOnce = 1;
-					Update_delay();
-					ClearScreen();
-					ScreenStatus = 0x02;
-				
+				Update_delay();
+				ClearScreen();
+				LCDGotoXY(1, 1);
+				LCDSendAString("Moisture trigger");
+				LCDGotoXY(2, 7);
+				LCDSendAString("SET");
+				Update_delay();
+				ClearScreen();
+				ScreenStatus = 0x02;
+				RunOnce = 1;
 			}
 			break;
 
@@ -345,17 +342,18 @@ int main(void)
 				Update_delay();
 				ClearScreen();
 				LCDGotoXY(1, 1);
-				LCDSendAString("Water trigger set");
+				LCDSendAString("Watering time");
+				LCDGotoXY(2, 7);
+				LCDSendAString("SET");
 				RunOnce = 1;
 				Update_delay();
 				ScreenStatus = 0x02;
 			}
-			if(RightPressed)
+			if (RightPressed)
 			{
 				ClearButtons();
 				RunOnce = 1;
 				ScreenStatus = 0x03;
-
 			}
 			break;
 
@@ -385,16 +383,15 @@ int main(void)
 			{
 				// Turn off automation
 				// Stop pump
-				
-					Update_delay();
-					ClearScreen();
-					LCDGotoXY(1, 1);
-					LCDSendAString("Automation off");
-					RunOnce = 1;
-					Update_delay();
-					ScreenStatus = 0x02;
-					ClearButtons();
-				
+
+				Update_delay();
+				ClearScreen();
+				LCDGotoXY(1, 1);
+				LCDSendAString("Automation off");
+				RunOnce = 1;
+				Update_delay();
+				ScreenStatus = 0x02;
+				ClearButtons();
 			}
 			break;
 
@@ -422,17 +419,17 @@ int main(void)
 			}
 			if (OkPressed)
 			{
-				//if probe calibrated
-				//if trigger set
-				//then turn on auto
-					Update_delay();
-					ClearScreen();
-					LCDGotoXY(1, 1);
-					LCDSendAString("System on auto");
-					RunOnce = 1;
-					Update_delay();
-					ScreenStatus = 0x02;
-					ClearButtons();
+				// if probe calibrated
+				// if trigger set
+				// then turn on auto
+				Update_delay();
+				ClearScreen();
+				LCDGotoXY(1, 1);
+				LCDSendAString("System on auto");
+				RunOnce = 1;
+				Update_delay();
+				ScreenStatus = 0x02;
+				ClearButtons();
 			}
 			break;
 
@@ -461,15 +458,20 @@ int main(void)
 			if (OkPressed)
 			{
 				ClearButtons();
-				/*
-				if LCDStatus = 2 maybe check if int or bool
-				while(ok pressed)
+				// Update_delay();
+				ClearScreen();
+				LCDGotoXY(1, 5);
+				LCDSendAString("Watering");
+				while (GPIOB->IDR & (1U << 14))
 				{
-					//turn om pump
+					WateringOn();
+					LCDGotoXY(2, 7);
+					LCDSendAString("ON");
 				}
-				//Turn off pump
-				*/
-				ScreenStatus = 0x02;
+				WateringOff();
+				LCDGotoXY(2, 7);
+				LCDSendAString("OFF");
+				ScreenStatus = 0x12;
 			}
 			break;
 
