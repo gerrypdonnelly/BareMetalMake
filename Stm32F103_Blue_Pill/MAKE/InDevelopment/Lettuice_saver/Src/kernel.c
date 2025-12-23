@@ -64,6 +64,13 @@ volatile bool LeftPressed;
 volatile bool RightPressed;
 volatile bool RunOnce = 1;
 uint16_t DTime = 10000; // delay time
+volatile int LeftPressedConfidenceLevel = 0;
+volatile int LeftReleasedConfidenceLevel = 0;
+volatile int RightPressedConfidenceLevel = 0;
+volatile int RightReleasedConfidenceLevel = 0;
+volatile int OkPressedConfidenceLevel = 0;
+volatile int OkReleasedConfidenceLevel = 0;
+volatile int ConfidenceLevel = 500;
 
 void Update_delay(void)
 {
@@ -76,6 +83,107 @@ void ClearButtons(void)
 	OkPressed = 0;
 	RightPressed = 0;
 }
+
+void ReadButtonsB(void)
+{
+	//Left Button 
+	if (GPIOB->IDR & (1U << 12))
+	{
+		if (LeftPressed == 0)
+		{
+			if (LeftPressedConfidenceLevel > ConfidenceLevel)
+			{
+				LeftPressed = 1;
+			}
+			else
+			{
+				LeftPressedConfidenceLevel++;
+				LeftReleasedConfidenceLevel = 0;
+			}
+		}
+	}
+	else
+	{
+		if (LeftPressed == 1)
+		{
+			if (LeftReleasedConfidenceLevel > ConfidenceLevel)
+			{
+				LeftPressed = 0;
+			}
+			else
+			{
+				LeftReleasedConfidenceLevel++;
+				LeftPressedConfidenceLevel = 0;
+			}
+		}
+	}
+
+	//Right Button 
+	if (GPIOB->IDR & (1U << 13))
+	{
+		if (RightPressed == 0)
+		{
+			if (RightPressedConfidenceLevel > ConfidenceLevel)
+			{
+				RightPressed = 1;
+			}
+			else
+			{
+				RightPressedConfidenceLevel++;
+				RightReleasedConfidenceLevel = 0;
+			}
+		}
+	}
+	else
+	{
+		if (RightPressed == 1)
+		{
+			if (RightReleasedConfidenceLevel > ConfidenceLevel)
+			{
+				RightPressed = 0;
+			}
+			else
+			{
+				RightReleasedConfidenceLevel++;
+				RightPressedConfidenceLevel = 0;
+			}
+		}
+	}
+
+	//Ok Button 
+	if (GPIOB->IDR & (1U << 14))
+	{
+		if (OkPressed == 0)
+		{
+			if (OkPressedConfidenceLevel > ConfidenceLevel)
+			{
+				OkPressed = 1;
+			}
+			else
+			{
+				OkPressedConfidenceLevel++;
+				OkReleasedConfidenceLevel = 0;
+			}
+		}
+	}
+	else
+	{
+		if (OkPressed == 1)
+		{
+			if (OkReleasedConfidenceLevel > ConfidenceLevel)
+			{
+				OkPressed = 0;
+			}
+			else
+			{
+				OkReleasedConfidenceLevel++;
+				OkPressedConfidenceLevel = 0;
+			}
+		}
+	}
+}
+
+
 
 void ReadButtons(void)
 {
