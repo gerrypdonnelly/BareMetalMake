@@ -56,27 +56,30 @@ LCD_Rw		B9	--|			|--C15
 #include "SYSTICK.h"
 #include "Timer.h"
 
-int timestamp = 0;
+volatile int WateringTime = 0;
+int LowCalibration = 0;
+int HighCalibration = 0;
+int MoistureTrigger = 0;
 uint16_t ScreenStatus = 0x00;
 uint16_t LastScreenStatus = 0x00;
 volatile bool OkPressed;
 volatile bool LeftPressed;
 volatile bool RightPressed;
 volatile bool RunOnce = 1;
-uint16_t DTime = 10000; // delay time
+int DTime = 1000000; // delay time
 volatile int LeftPressedConfidenceLevel = 0;
 volatile int LeftReleasedConfidenceLevel = 0;
 volatile int RightPressedConfidenceLevel = 0;
 volatile int RightReleasedConfidenceLevel = 0;
 volatile int OkPressedConfidenceLevel = 0;
 volatile int OkReleasedConfidenceLevel = 0;
-volatile int ConfidenceLevel = 500;
+volatile int ConfidenceLevel = 200;
 volatile uint16_t ProbeValue = 0;
 volatile int AutoMode = 0;
 
 void Update_delay(void)
 {
-	for (volatile int i = 0; i < 1000000; i++)
+	for (int i = 0; i < DTime; i++)
 		; // Simple delay
 }
 void ClearButtons(void)
@@ -88,7 +91,7 @@ void ClearButtons(void)
 
 void ReadButtonsB(void)
 {
-	//Left Button 
+	// Left Button
 	if (GPIOB->IDR & (1U << 12))
 	{
 		if (LeftPressed == 0)
@@ -119,8 +122,7 @@ void ReadButtonsB(void)
 			}
 		}
 	}
-
-	//Right Button 
+	// Right Button
 	if (GPIOB->IDR & (1U << 13))
 	{
 		if (RightPressed == 0)
@@ -151,8 +153,7 @@ void ReadButtonsB(void)
 			}
 		}
 	}
-
-	//Ok Button 
+	// Ok Button
 	if (GPIOB->IDR & (1U << 14))
 	{
 		if (OkPressed == 0)
@@ -184,8 +185,6 @@ void ReadButtonsB(void)
 		}
 	}
 }
-
-
 
 void ReadButtons(void)
 {
@@ -225,15 +224,17 @@ int main(void)
 
 	while (1)
 	{
-		ReadButtons();
+		ReadButtonsB();
 		switch (ScreenStatus)
 		{
 		case 0x00:
 			if (RunOnce)
 			{
 				ClearScreen();
-				LCDGotoXY(1,1);
-				LCDSendAString("Plant Watering system");
+				LCDGotoXY(1, 1);
+				LCDSendAString(" Plant Watering");
+				LCDGotoXY(2, 5);
+				LCDSendAString(" System");
 				RunOnce = 0;
 				ClearButtons();
 			}
@@ -366,7 +367,7 @@ int main(void)
 			{
 				ClearButtons();
 				// Read analog input
-				ProbeValue = adc_read();
+				// ProbeValue = adc_read();
 				// Store value in memory
 				ClearScreen();
 				LCDGotoXY(1, 1);
@@ -428,19 +429,25 @@ int main(void)
 			{
 				ClearScreen();
 				LCDGotoXY(1, 1);
-				printg("Watering time\r\n");
+				// printg("Watering time\r\n");
 				LCDSendAString("Watering time"); // Watering time
+				LCDGotoXY(2, 1);
+				LCDSendAString("in seconds");
 				RunOnce = 0;
 				ClearButtons();
 			}
 			if (LeftPressed)
 			{
+				// while ok is not pressed decrement time value
+				LCDGotoXY(1, 11);
+				LCDSendAString("99");
 				ClearButtons();
-				ScreenStatus = 0x06;
+				// ScreenStatus = 0x06;
 				RunOnce = 1;
 			}
 			if (OkPressed)
 			{
+				// Save the time setting in memory
 				ClearButtons();
 				Update_delay();
 				ClearScreen();
@@ -486,7 +493,7 @@ int main(void)
 				// Turn off automation
 				AutoMode = 0;
 				// Stop pump
-				GPIOB->ODR &= ~(1U<<15);
+				GPIOB->ODR &= ~(1U << 15);
 				Update_delay();
 				ClearScreen();
 				LCDGotoXY(1, 1);
@@ -562,7 +569,7 @@ int main(void)
 				ClearScreen();
 				LCDGotoXY(1, 5);
 				LCDSendAString("Watering");
-				while (GPIOB->IDR & (1U << 14))
+				while (OkPressed)
 				{
 					WateringOn();
 					LCDGotoXY(2, 7);
