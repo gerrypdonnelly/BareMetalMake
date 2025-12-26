@@ -89,7 +89,7 @@ void ClearButtons(void)
 	RightPressed = 0;
 }
 
-void ReadButtonsB(void)
+void ReadButtons(void)
 {
 	// Left Button
 	if (GPIOB->IDR & (1U << 12))
@@ -186,33 +186,6 @@ void ReadButtonsB(void)
 	}
 }
 
-void ReadButtons(void)
-{
-	if (GPIOB->IDR & (1U << 12))
-	{
-		LeftPressed = 1;
-	}
-	else
-	{
-		LeftPressed = 0;
-	}
-	if (GPIOB->IDR & (1U << 13))
-	{
-		RightPressed = 1;
-	}
-	else
-	{
-		RightPressed = 0;
-	}
-	if (GPIOB->IDR & (1U << 14))
-	{
-		OkPressed = 1;
-	}
-	else
-	{
-		OkPressed = 0;
-	}
-}
 
 int main(void)
 {
@@ -224,7 +197,35 @@ int main(void)
 
 	while (1)
 	{
-		ReadButtonsB();
+		if (AutoMode)
+		{
+			// Read probe value
+			ProbeValue = adc_read();
+			printg("Probe Value: %d\r\n", ProbeValue);
+			if (ProbeValue < MoistureTrigger)
+			{
+				// Start watering
+				printg("Starting watering for %d seconds\r\n", WateringTime);
+				WateringOn();
+				for (int i = 0; i < WateringTime; i++)
+				{
+					Update_delay();
+				}
+				WateringOff();
+				printg("Watering complete\r\n");
+			}
+			else
+			{
+				printg("Soil moisture adequate, no watering needed\r\n");
+			}
+		}
+		else
+		{
+			// Manual mode - handle user interface
+		ReadButtons();
+		}
+
+		
 		switch (ScreenStatus)
 		{
 		case 0x00:
@@ -528,26 +529,75 @@ int main(void)
 			}
 			if (OkPressed)
 			{
-				// if probes calibrated
-				// if trigger set
-				// then turn on auto
-				Update_delay();
-				ClearScreen();
-				LCDGotoXY(1, 1);
-				LCDSendAString("System on auto");
-				RunOnce = 1;
-				Update_delay();
-				ScreenStatus = 0x02;
-				ClearButtons();
+				if (WateringTime == 0)
+				{
+					ClearScreen();
+					LCDGotoXY(1, 1);
+					LCDSendAString("Watering time needs to be set");
+					Update_delay();
+					ScreenStatus = 0x07;
+					RunOnce = 1;
+				}
+				if (LowCalibration == 0)
+				{
+					ClearScreen();
+					LCDGotoXY(1, 1);
+					LCDSendAString("Low Calibration needs to be set");
+					Update_delay();
+					ScreenStatus = 0x04;
+					RunOnce = 1;
+				}
+				if (HighCalibration == 0)
+				{
+					ClearScreen();
+					LCDGotoXY(1, 1);
+					LCDSendAString("High Calibration needs to be set");
+					Update_delay();
+					ScreenStatus = 0x05;
+					RunOnce = 1;
+				}
+				if (MoistureTrigger == 0)
+				{
+					ClearScreen();
+					LCDGotoXY(1, 1);
+					LCDSendAString("Moisture Trigger needs to be set");
+					Update_delay();
+					ScreenStatus = 0x06;
+					RunOnce = 1;
+				}
+				if (LowCalibration >= HighCalibration)
+				{
+					// Report problem with probe calibration
+					ClearScreen();
+					LCDGotoXY(1, 1);
+					LCDSendAString("Probe needs cal");
+					Update_delay();
+					Update_delay();
+					ScreenStatus = 0x03;
+					RunOnce = 1;
+				}
+				if ((WateringTime > 0) && (LowCalibration > 0) && (HighCalibration > 0) && (MoistureTrigger > 0))
+				{
+					AutoMode = 1;
+					Update_delay();
+					ClearScreen();
+					LCDGotoXY(1, 1);
+					LCDSendAString("System on auto");
+					RunOnce = 1;
+					Update_delay();
+					ScreenStatus = 0x02;
+					ClearButtons();
+				}
 			}
 			break;
-		case 0x12:
+
+			case 0x12:
 			if (RunOnce)
 			{
 				ClearScreen();
 				LCDGotoXY(1, 1);
 				printg("Hold OK to water\r\n");
-				LCDSendAString("Hold ok to water"); // No input
+				LCDSendAString("Hold ok to water");
 				RunOnce = 0;
 				ClearButtons();
 			}
@@ -611,5 +661,5 @@ int main(void)
 			}
 			break;
 		}
-	}
+			}
 }
