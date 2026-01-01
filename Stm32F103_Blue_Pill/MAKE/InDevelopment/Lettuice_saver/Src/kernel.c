@@ -58,12 +58,8 @@ LCD_Rw		B9	--|			|--C15
 #include "Flash.h"
 
 
-#define Testing
+//#define Testing
 
-volatile int WateringTime = 0;
-int LowCalibration = 0;
-int HighCalibration = 0;
-int MoistureTrigger = 0;
 int LowCalibrationMem;
 int HighCalibrationMem;
 int MoistureTriggerMem;
@@ -85,74 +81,17 @@ volatile int ConfidenceLevel = 200;
 volatile uint16_t ProbeValue = 0;
 volatile int AutoMode = 0;
 
+static Settings_t Settings; //Set up the structure to store the setings in
+
+/*
 #ifndef Testing
 LowCalibration = 10;
 HighCalibration = 100;
 MoistureTrigger = 25;
 WateringTime = 3;
 #endif
+*/
 
-void WriteToMemoryWateringTime(int time)
-{
-	if(WateringTimeMem != time)
-	{
-		//Write data to memory
-	}
-
-}
-void WriteToMemoryMoistureTrigger(int trigger)
-{
-	if(MoistureTriggerMem != trigger)
-	{
-		//Write data to memory
-	}
-}
-
-void WriteToMemoryHighCal(int highCal)
-{
-	if(HighCalibrationMem != highCal)
-	{
-		//Write data to memory
-	}
-}
-
-void WriteToMemoryLowCal(int lowCal)
-{
-	if(LowCalibrationMem != lowCal)
-	{
-		// Write data to memory
-	}
-}
-
-int ReadFromMemoryWateringTime(void)
-{
-	//Function to read data to memory
-	return 0;
-}
-int ReadFromMemoryMoistureTrigger(void)
-{
-	//Function to rea data from memory
-	return 0;
-}
-int ReadFromMemoryHighCal(void)
-{
-	//Function to read data from memory
-	return 0;
-}
-int ReadFromMemoryLowCal(void)
-{
-	//Function to read data from memory
-	return 0;
-}
-
-
-void ReadSettings(void)
-{
-	LowCalibrationMem = ReadFromMemoryLowCal();
-	HighCalibrationMem = ReadFromMemoryHighCal();
-	MoistureTriggerMem = ReadFromMemoryMoistureTrigger();
-	WateringTimeMem = ReadFromMemoryWateringTime();
-}
 
 
 void Update_delay(void)
@@ -270,11 +209,11 @@ void SetWateringTime (void)
 	//if left button pressed decrement time
 if(LeftPressed)
 {
-	WateringTime--;
+	Settings.WateringTime--;
 	// Update display
 	LCDGotoXY(1,11);
 	char buffer[3];
-	printg("%o2d", WateringTime);
+	printg("%o2d", Settings.WateringTime);
 	LCDSendAString(buffer);
 	Update_delay();
 	ClearButtons();
@@ -282,11 +221,11 @@ if(LeftPressed)
 	//if right button pressed increment time
 	if(RightPressed)
 	{
-		WateringTime++;
+		Settings.WateringTime++;
 		// Update display
 		LCDGotoXY(1,11);
 		char buffer[3];
-		printg("%o2d", WateringTime);
+		printg("%o2d", Settings.WateringTime);
 		LCDSendAString(buffer);
 		Update_delay();
 		ClearButtons();
@@ -294,9 +233,7 @@ if(LeftPressed)
 	//if ok button pressed save time and go back to settings menu
 	if(OkPressed)
 	{
-		// Save time to memory
-		WriteToMemoryWateringTime(WateringTime);
-		WateringTimeMem = WateringTime;
+		// If setting is different to saved time then update time used and time to be stored in memory
 		Update_delay();
 		ClearScreen();
 		LCDGotoXY(1, 1);
@@ -315,11 +252,11 @@ void MoistureTriggerSet (void)
 	//if left button pressed decrement trigger level
 	if(LeftPressed)
 	{
-		MoistureTrigger--;
+		Settings.MoistureTrigger--;
 		// Update display
 		LCDGotoXY(1,11);
 		char buffer[3];
-		printg("%o2d", MoistureTrigger);
+		printg("%o2d", Settings.MoistureTrigger);
 		LCDSendAString(buffer);
 		Update_delay();
 		ClearButtons();
@@ -327,22 +264,19 @@ void MoistureTriggerSet (void)
 	//if right button pressed increment trigger level
 	if(RightPressed)
 	{
-		MoistureTrigger++;
+		Settings.MoistureTrigger++;
 		// Update display
 		LCDGotoXY(1,11);
 		char buffer[3];
-		printg("%o2d", MoistureTrigger);
+		printg("%o2d", Settings.MoistureTrigger);
 		LCDSendAString(buffer);
 		Update_delay();
 		ClearButtons();
 	}
-
 	//if ok button pressed save trigger level and go back to settings menu
 	if(OkPressed)
 	{
-		// Save trigger level to memory
-		WriteToMemoryMoistureTrigger(MoistureTrigger);
-		MoistureTriggerMem = MoistureTrigger;
+	// If setting is different to saved time then update time used and time to be stored in memory
 		Update_delay();
 		ClearScreen();
 		LCDGotoXY(1, 1);
@@ -372,12 +306,12 @@ int main(void)
 			// Read probe value
 			ProbeValue = adc_read();
 			printg("Probe Value: %d\r\n", ProbeValue);
-			if (ProbeValue < MoistureTrigger)
+			if (ProbeValue < Settings.MoistureTrigger)
 			{
 				// Start watering
-				printg("Starting watering for %d seconds\r\n", WateringTime);
+				printg("Starting watering for %d seconds\r\n", Settings.WateringTime);
 				WateringOn();
-				for (int i = 0; i < WateringTime; i++)
+				for (int i = 0; i < Settings.WateringTime; i++)
 				{
 					Update_delay();
 				}
@@ -699,7 +633,7 @@ int main(void)
 			}
 			if (OkPressed)
 			{
-				if (WateringTime == 0)
+				if (Settings.WateringTime == 0)
 				{
 					ClearScreen();
 					LCDGotoXY(1, 1);
@@ -708,7 +642,7 @@ int main(void)
 					ScreenStatus = 0x07;
 					RunOnce = 1;
 				}
-				if (LowCalibration == 0)
+				if (Settings.LowCalibration == 0)
 				{
 					ClearScreen();
 					LCDGotoXY(1, 1);
@@ -717,7 +651,7 @@ int main(void)
 					ScreenStatus = 0x04;
 					RunOnce = 1;
 				}
-				if (HighCalibration == 0)
+				if (Settings.HighCalibration == 0)
 				{
 					ClearScreen();
 					LCDGotoXY(1, 1);
@@ -726,7 +660,7 @@ int main(void)
 					ScreenStatus = 0x05;
 					RunOnce = 1;
 				}
-				if (MoistureTrigger == 0)
+				if (Settings.MoistureTrigger == 0)
 				{
 					ClearScreen();
 					LCDGotoXY(1, 1);
@@ -735,7 +669,7 @@ int main(void)
 					ScreenStatus = 0x06;
 					RunOnce = 1;
 				}
-				if (LowCalibration >= HighCalibration)
+				if (Settings.LowCalibration >= Settings.HighCalibration)
 				{
 					// Report problem with probe calibration
 					ClearScreen();
@@ -746,7 +680,7 @@ int main(void)
 					ScreenStatus = 0x03;
 					RunOnce = 1;
 				}
-				if ((WateringTime > 0) && (LowCalibration > 0) && (HighCalibration > 0) && (MoistureTrigger > 0))
+				if ((Settings.WateringTime > 0) && (Settings.LowCalibration > 0) && (Settings.HighCalibration > 0) && (Settings.MoistureTrigger > 0))
 				{
 					AutoMode = 1;
 					Update_delay();
