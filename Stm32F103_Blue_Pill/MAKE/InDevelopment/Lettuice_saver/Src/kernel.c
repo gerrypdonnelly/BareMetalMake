@@ -55,11 +55,19 @@ LCD_Rw		B9	--|			|--C15
 #include "trace.h"
 #include "SYSTICK.h"
 #include "Timer.h"
+#include "Flash.h"
+
+
+#define Testing
 
 volatile int WateringTime = 0;
 int LowCalibration = 0;
 int HighCalibration = 0;
 int MoistureTrigger = 0;
+int LowCalibrationMem;
+int HighCalibrationMem;
+int MoistureTriggerMem;
+int WateringTimeMem;
 uint16_t ScreenStatus = 0x00;
 uint16_t LastScreenStatus = 0x00;
 volatile bool OkPressed;
@@ -76,6 +84,76 @@ volatile int OkReleasedConfidenceLevel = 0;
 volatile int ConfidenceLevel = 200;
 volatile uint16_t ProbeValue = 0;
 volatile int AutoMode = 0;
+
+#ifndef Testing
+LowCalibration = 10;
+HighCalibration = 100;
+MoistureTrigger = 25;
+WateringTime = 3;
+#endif
+
+void WriteToMemoryWateringTime(int time)
+{
+	if(WateringTimeMem != time)
+	{
+		//Write data to memory
+	}
+
+}
+void WriteToMemoryMoistureTrigger(int trigger)
+{
+	if(MoistureTriggerMem != trigger)
+	{
+		//Write data to memory
+	}
+}
+
+void WriteToMemoryHighCal(int highCal)
+{
+	if(HighCalibrationMem != highCal)
+	{
+		//Write data to memory
+	}
+}
+
+void WriteToMemoryLowCal(int lowCal)
+{
+	if(LowCalibrationMem != lowCal)
+	{
+		// Write data to memory
+	}
+}
+
+int ReadFromMemoryWateringTime(void)
+{
+	//Function to read data to memory
+	return 0;
+}
+int ReadFromMemoryMoistureTrigger(void)
+{
+	//Function to rea data from memory
+	return 0;
+}
+int ReadFromMemoryHighCal(void)
+{
+	//Function to read data from memory
+	return 0;
+}
+int ReadFromMemoryLowCal(void)
+{
+	//Function to read data from memory
+	return 0;
+}
+
+
+void ReadSettings(void)
+{
+	LowCalibrationMem = ReadFromMemoryLowCal();
+	HighCalibrationMem = ReadFromMemoryHighCal();
+	MoistureTriggerMem = ReadFromMemoryMoistureTrigger();
+	WateringTimeMem = ReadFromMemoryWateringTime();
+}
+
 
 void Update_delay(void)
 {
@@ -183,6 +261,98 @@ void ReadButtons(void)
 				OkPressedConfidenceLevel = 0;
 			}
 		}
+	}
+}
+
+
+void SetWateringTime (void)
+{
+	//if left button pressed decrement time
+if(LeftPressed)
+{
+	WateringTime--;
+	// Update display
+	LCDGotoXY(1,11);
+	char buffer[3];
+	printg("%o2d", WateringTime);
+	LCDSendAString(buffer);
+	Update_delay();
+	ClearButtons();
+}
+	//if right button pressed increment time
+	if(RightPressed)
+	{
+		WateringTime++;
+		// Update display
+		LCDGotoXY(1,11);
+		char buffer[3];
+		printg("%o2d", WateringTime);
+		LCDSendAString(buffer);
+		Update_delay();
+		ClearButtons();
+	}
+	//if ok button pressed save time and go back to settings menu
+	if(OkPressed)
+	{
+		// Save time to memory
+		WriteToMemoryWateringTime(WateringTime);
+		WateringTimeMem = WateringTime;
+		Update_delay();
+		ClearScreen();
+		LCDGotoXY(1, 1);
+		LCDSendAString("Watering time");
+		LCDGotoXY(2, 7);
+		LCDSendAString("SET");
+		RunOnce = 1;
+		Update_delay();
+		ScreenStatus = 0x02;
+		ClearButtons();
+	}
+}
+
+void MoistureTriggerSet (void)
+{
+	//if left button pressed decrement trigger level
+	if(LeftPressed)
+	{
+		MoistureTrigger--;
+		// Update display
+		LCDGotoXY(1,11);
+		char buffer[3];
+		printg("%o2d", MoistureTrigger);
+		LCDSendAString(buffer);
+		Update_delay();
+		ClearButtons();
+	}
+	//if right button pressed increment trigger level
+	if(RightPressed)
+	{
+		MoistureTrigger++;
+		// Update display
+		LCDGotoXY(1,11);
+		char buffer[3];
+		printg("%o2d", MoistureTrigger);
+		LCDSendAString(buffer);
+		Update_delay();
+		ClearButtons();
+	}
+
+	//if ok button pressed save trigger level and go back to settings menu
+	if(OkPressed)
+	{
+		// Save trigger level to memory
+		WriteToMemoryMoistureTrigger(MoistureTrigger);
+		MoistureTriggerMem = MoistureTrigger;
+		Update_delay();
+		ClearScreen();
+		LCDGotoXY(1, 1);
+		LCDSendAString("Moisture trigger");
+		LCDGotoXY(2, 7);
+		LCDSendAString("SET");
+		RunOnce = 1;
+		Update_delay();
+		ScreenStatus = 0x02;
+		ClearButtons();
 	}
 }
 

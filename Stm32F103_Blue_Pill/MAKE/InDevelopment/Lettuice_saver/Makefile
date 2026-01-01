@@ -5,7 +5,7 @@ LFLAGS = -T startup_linker/stm32F103_linker_script.ld -nostartfiles -Wl,-Map=$(B
 BUILD_DIR = build
 BIN_DIR = bin
 
-OFILES = $(BUILD_DIR)/kernel.o $(BUILD_DIR)/LCD.o $(BUILD_DIR)/IO.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/trace.o $(BUILD_DIR)/ADC.o $(BUILD_DIR)/exti.o $(BUILD_DIR)/systick.o $(BUILD_DIR)/timer.o  
+OFILES = $(BUILD_DIR)/kernel.o $(BUILD_DIR)/LCD.o $(BUILD_DIR)/IO.o $(BUILD_DIR)/Flash.o $(BUILD_DIR)/stm32f103_startup.o $(BUILD_DIR)/trace.o $(BUILD_DIR)/ADC.o $(BUILD_DIR)/exti.o $(BUILD_DIR)/systick.o $(BUILD_DIR)/timer.o  
 
 
 all : $(BIN_DIR)/input_interrupt.elf
@@ -46,6 +46,9 @@ $(BUILD_DIR)/systick.o : Src/SYSTICK.c | $(BUILD_DIR)
 
 $(BIN_DIR)/input_interrupt.elf : $(OFILES) | $(BIN_DIR)
 	$(CC) $(LFLAGS) $^ -o $@
+
+$(BUILD_DIR)/Flash.o : Src/Flash.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) $^ -o $@
 
 flash : 
 	openocd -f interface/stlink.cfg -f target/stm32f1x.cfg -c "program $(BIN_DIR)/input_interrupt.elf verify reset exit"
