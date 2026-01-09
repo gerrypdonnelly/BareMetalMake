@@ -15,37 +15,29 @@ Input button connections
 Left Button B12
 Right Button B13
 Ok Button B14
-
 Probe connection
-Probe0 Button PA0
-Probe1 Button PA1
-Probe2 Button PA2
-Probe3 Button PA3
-
+Probe Button PA1
 Pump connection
-Pump0 Pin A11
-Pump1 Pin B15
-Pump2 Pin A12
-Pump3 Pin A15
+Pump Pin B15
 
 Stm32F103 Blue Pill
 				   _________
 Left		B12	--|			|--5v
 Right		B13	--|			|--G
 Ok			B14	--|			|--3v3
-Pump1		B15	--|			|--R
+Pump		B15	--|			|--R
 			A8	--|			|--B11
 Tx			A9	--|			|--B10	LCD_En
 Rx			A10	--|			|--B1
-Pump0		A11	--|			|--B0
-Pump2		A12	--|			|--A7	LCD_D7
-Pump3		A15	--|			|--A6	LCD_D6
+			A11	--|			|--B0
+			A12	--|			|--A7	LCD_D7
+			A15	--|			|--A6	LCD_D6
 			B3	--|			|--A5	LCD_D5
 			B4	--|			|--A4	LCD_D4
-			B5	--|			|--A3   Probe3 ADC
-			B6	--|			|--A2	Probe2 ADC
-			B7	--|			|--A1	Probe1 ADC
-LCD_Rs		B8	--|			|--A0   Probe0 ADC
+			B5	--|			|--A3
+			B6	--|			|--A2
+			B7	--|			|--A1	Probe ADC
+LCD_Rs		B8	--|			|--A0
 LCD_Rw		B9	--|			|--C15
 			5v	--|			|--C14
 			G	--|			|--C13
