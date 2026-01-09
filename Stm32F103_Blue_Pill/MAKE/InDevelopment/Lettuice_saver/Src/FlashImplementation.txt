@@ -1,20 +1,20 @@
 This file contains a simple implememtation example of the flash.c driver
 //Decleare global or statis instance
-static Settings_t Settings;
+static Settings_t g_settings;
 
 //Load settings at boot
 void system_init(void)
 {
-    settings_load(&Settings);
+    settings_load(&g_settings);
 
     /* Optional: validate checksum */
-    if (Settings.checksum != settings_checksum(&Settings)) {
+    if (g_settings.checksum != settings_checksum(&g_settings)) {
         // Flash data corrupted → restore defaults
-        Settings.magic = 0xDEADBEEF;
-        Settings.baudrate = 115200;
-        Settings.device_id = 1;
-        Settings.flags = 0;
-        Settings.checksum = settings_checksum(&Settings);
+        g_settings.magic = 0xDEADBEEF;
+        g_settings.baudrate = 115200;
+        g_settings.device_id = 1;
+        g_settings.flags = 0;
+        g_settings.checksum = settings_checksum(&g_settings);
     }
 }
 
@@ -22,23 +22,22 @@ void system_init(void)
 //Use settings anywhere in code 
 void uart_init_from_settings(void)
 {
-    uart_set_baudrate(Settings.baudrate);
+    uart_set_baudrate(g_settings.baudrate);
 }
 
 uint8_t get_device_id(void)
 {
-    return Settings.device_id;
+    return g_settings.device_id;
 }
 
 
 //Modify settings at runtime 
 void cmd_set_baudrate(uint32_t new_baud)
 {
-    if (Settings.baudrate != new_baud) 
-    {
-        Settings.baudrate = new_baud;
-        Settings.checksum = settings_checksum(&Settings);
-        settings_save(&Settings);
+    if (g_settings.baudrate != new_baud) {
+        g_settings.baudrate = new_baud;
+        g_settings.checksum = settings_checksum(&g_settings);
+        settings_save(&g_settings);
     }
 }
 
@@ -47,8 +46,8 @@ void cmd_set_baudrate(uint32_t new_baud)
 //Save settings when exiting command mode
 void config_mode_exit(void)
 {
-    g_settings.checksum = settings_checksum(&Settings);
-    settings_save(&Settings);
+    g_settings.checksum = settings_checksum(&g_settings);
+    settings_save(&g_settings);
 }
 
 
@@ -57,7 +56,7 @@ void config_mode_exit(void)
 //Full minimal code example of main.c
 #include "Flash.h"
 
-static Settings_t Settings;
+static Settings_t g_settings;
 
 int main(void)
 {
@@ -65,22 +64,22 @@ int main(void)
     gpio_init();
     uart_init();
 
-    settings_load(&Settings);
+    settings_load(&g_settings);
 
-    if (Settings.checksum != settings_checksum(&Settings)) {
-        Settings.magic = 0xDEADBEEF;
-        Settings.baudrate = 115200;
-        Settings.device_id = 1;
-        Settings.flags = 0;
+    if (g_settings.checksum != settings_checksum(&g_settings)) {
+        g_settings.magic = 0xDEADBEEF;
+        g_settings.baudrate = 115200;
+        g_settings.device_id = 1;
+        g_settings.flags = 0;
     }
 
-    uart_set_baudrate(Settings.baudrate);
+    uart_set_baudrate(g_settings.baudrate);
 
     while (1) {
         if (user_pressed_button()) {
-            Settings.device_id++;
-            Settings.checksum = settings_checksum(&Settings);
-            settings_save(&Settings);
+            g_settings.device_id++;
+            g_settings.checksum = settings_checksum(&g_settings);
+            settings_save(&g_settings);
         }
     }
 }
@@ -91,9 +90,9 @@ int main(void)
 RULES
 
 1. Always load once at boot
-    settings_load(&Settings);
+    settings_load(&settings);
 
 2. Always update checksum before saving
-    Settings.checksum = settings_checksum(&Settings);
+    settings.checksum = settings_checksum(&settings);
 
 3.  Always modify the ram copy never write directly to flash
