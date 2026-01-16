@@ -60,26 +60,26 @@ LCD_Rw		B9	--|			|--C15
 
 //#define Testing
 
-int LowCalibrationMem;
-int HighCalibrationMem;
-int MoistureTriggerMem;
-int WateringTimeMem;
-uint16_t ScreenStatus = 0x00;
+volatile uint16_t LowCalibrationMem;
+volatile uint16_t HighCalibrationMem;
+volatile uint16_t MoistureTriggerMem;
+volatile uint16_t WateringTimeMem;
+volatile uint16_t ScreenStatus = 0x00;
 uint16_t LastScreenStatus = 0x00;
 volatile bool OkPressed;
 volatile bool LeftPressed;
 volatile bool RightPressed;
 volatile bool RunOnce = 1;
-int DTime = 1000000; // delay time
-volatile int LeftPressedConfidenceLevel = 0;
-volatile int LeftReleasedConfidenceLevel = 0;
-volatile int RightPressedConfidenceLevel = 0;
-volatile int RightReleasedConfidenceLevel = 0;
-volatile int OkPressedConfidenceLevel = 0;
-volatile int OkReleasedConfidenceLevel = 0;
-volatile int ConfidenceLevel = 200;
+static int DTime = 1000000; // delay time
+volatile uint8_t LeftPressedConfidenceLevel = 0;
+volatile uint8_t LeftReleasedConfidenceLevel = 0;
+volatile uint8_t RightPressedConfidenceLevel = 0;
+volatile uint8_t RightReleasedConfidenceLevel = 0;
+volatile uint8_t OkPressedConfidenceLevel = 0;
+volatile uint8_t OkReleasedConfidenceLevel = 0;
+volatile uint8_t ConfidenceLevel = 200;
 volatile uint16_t ProbeValue = 0;
-volatile int AutoMode = 0;
+volatile bool AutoMode = 0;
 
 static Settings_t Settings; //Set up the structure to store the setings in
 
@@ -105,7 +105,6 @@ void ClearButtons(void)
 	OkPressed = 0;
 	RightPressed = 0;
 }
-
 void ReadButtons(void)
 {
 	// Left Button
@@ -328,8 +327,6 @@ int main(void)
 			// Manual mode - handle user interface
 		ReadButtons();
 		}
-
-		
 		switch (ScreenStatus)
 		{
 		case 0x00:
@@ -694,7 +691,6 @@ int main(void)
 				}
 			}
 			break;
-
 			case 0x12:
 			if (RunOnce)
 			{
@@ -735,7 +731,7 @@ int main(void)
 				ScreenStatus = 0x12;
 			}
 			break;
-		case 0x13:
+			case 0x13:
 			if (RunOnce)
 			{
 				ClearScreen();
