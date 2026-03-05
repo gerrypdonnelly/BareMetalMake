@@ -19,14 +19,12 @@
 
 void pa1_adc_init(void)
 {
-
 	RCC->APB2ENR |= GPIOAEN; //Enable clock access to GPIOA port
 	RCC->APB2ENR |= ADC1EN;//Enable clock access to ADC
 	GPIOA->CRL &=~(1U<<7);//Configure ADC GPIO PA1 pin 11 as analog pin MODE input 0:0  CNF analog 0:0
 	GPIOA->CRL &=~(1U<<6);
 	GPIOA->CRL &=~(1U<<5);
 	GPIOA->CRL &=~(1U<<4);
-
 	/*configure ADC peripheral*/
 	//Enable the ADC module
 	ADC1->CR2 |= CR2_ADON;  //ADC_CR2 bit 0 ADON enables and disables ADC
@@ -35,21 +33,14 @@ void pa1_adc_init(void)
 	ADC1->CR2 |= ADC_CR2_CAL;            // Start calibration
 	while (ADC1->CR2 & ADC_CR2_CAL);     // Wait for calibration to complete
 	//Configure ADC parameters
-
-
-
 }
-
-
 
 void Start_conversion(void)
 {
-
 	ADC1->CR2 |= CR2_CONT; //Enable continuous conversion
 	//Start ADC conversion
 	ADC1->CR2 |= ADC_CR2_ADON;           // Start the ADC conversion
 }
-
 
 uint16_t adc_read(void)
 {
